@@ -1,39 +1,38 @@
 # Production Dockerfile for Express API
-FROM node:18-alpine AS base
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apk add --no-cache libc6-compat
+
+# Copy package files
+COPY package*.json ./
 
 # Install dependencies
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
-
-COPY package*.json ./
 RUN npm ci --only=production && npm cache clean --force
 
-# Build stage
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# Copy source code
 COPY . .
 
-# Production stage
-FROM base AS runner
-WORKDIR /app
-
-ENV NODE_ENV=production
-
+# Create non-root user
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 expressjs
 
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/src ./src
-COPY --from=builder /app/server.js ./
-
+# Change ownership
+RUN chown -R expressjs:nodejs /app
 USER expressjs
 
+# Set environment
+ENV NODE_ENV=production
+
+# Expose port
 EXPOSE 3000
 
+# Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node healthcheck.js
+  CMD node --version || exit 1
 
-CMD ["node", "server.js"]
+# Start the application
+CMD ["node", "src/index.js"]
