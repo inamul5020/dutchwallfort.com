@@ -19,7 +19,7 @@ services:
   api:
     build: ./server
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=${NODE_ENV}
       - DATABASE_URL=${DATABASE_URL}
       - JWT_SECRET=${JWT_SECRET}
       - SESSION_SECRET=${SESSION_SECRET}
@@ -32,7 +32,7 @@ services:
   frontend:
     build: .
     environment:
-      - VITE_API_URL=${VITE_API_URL}
+      - VITE_API_URL=http://api:3000
     depends_on:
       - api
     expose:

@@ -110,12 +110,13 @@ POSTGRES_PASSWORD=your_secure_password_here
 POSTGRES_DB=dutchwallfort
 
 # API
+NODE_ENV=production
 DATABASE_URL=postgresql://dutchwallfort_user:your_secure_password_here@postgres:5432/dutchwallfort
-JWT_SECRET=your_production_jwt_secret_min_32_chars
-SESSION_SECRET=your_production_session_secret_min_32_chars
+JWT_SECRET=your_production_jwt_secret_min_32_chars_please
+SESSION_SECRET=your_production_session_secret_min_32_chars_please
 
-# Frontend
-VITE_API_URL=https://your-domain.com
+# Frontend (automatically set to http://api:3000 for internal communication)
+# VITE_API_URL is handled internally in coolify-compose.yml
 ```
 
 #### **Troubleshooting Coolify Issues:**
