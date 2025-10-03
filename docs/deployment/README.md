@@ -121,7 +121,9 @@ VITE_API_URL=https://your-domain.com
 #### **Troubleshooting Coolify Issues:**
 - If getting `vite: not found` errors, ensure Coolify is using production Dockerfiles
 - If `package.json` not found, check build context is set to repository root
-- Use `coolify-compose.yml` for simplest deployment
+- If getting `port is already allocated` errors, the `coolify-compose.yml` uses `expose` instead of `ports` for Coolify's reverse proxy
+- Use `coolify-compose.yml` for simplest deployment - it doesn't bind external ports
+- Ensure environment variables are set in Coolify dashboard, not in the compose file
 
 ### **SSL Configuration**
 ```bash

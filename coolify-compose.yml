@@ -26,8 +26,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
 
   frontend:
     build: .
@@ -35,8 +35,8 @@ services:
       - VITE_API_URL=${VITE_API_URL}
     depends_on:
       - api
-    ports:
-      - "80:80"
+    expose:
+      - "80"
 
 volumes:
   postgres_data:
