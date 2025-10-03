@@ -2,16 +2,17 @@
 
 **Premium accommodation management system for the historic Dutch Wall Fort villa in Galle Fort, Sri Lanka**
 
-[![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)]()
+[![Version](https://img.shields.io/badge/Version-1.0.1-blue.svg)]()
 [![Status](https://img.shields.io/badge/Status-Production-green.svg)]()
-[![Last Updated](https://img.shields.io/badge/Updated-October_2,_2025-orange.svg)]()
+[![Last Updated](https://img.shields.io/badge/Updated-October_3,_2025-orange.svg)]()
 
 ---
 
 ## 📋 **Documentation Index**
 
 ### **🚀 Getting Started**
-- **[Main README](../README.md)** - Project overview and quick start guide
+- **[Quick Start Guide](./guides/quick-start.md)** - Get running in 5 minutes
+- **[Main README](../README.md)** - Project overview and architecture
 - **[Setup Guide](./guides/setup-guide.md)** - Complete installation instructions
 - **[CHANGELOG.md](./CHANGELOG.md)** - Version history and recent updates
 
@@ -25,36 +26,28 @@
 - **[Development Workflow](./guides/development-workflow.md)** - Development processes and best practices
 - **[Contributing Guide](./guides/contributing.md)** - How to contribute to the project
 
-### **🚀 Development Templates**
+### **🛠️ Development Resources**
 
-#### **Bolt.new Templates**
-- **[Bolt.new Backend Template](./templates/bolt/bolt-new-backend-template.md)** - Complete backend generation template
-- **[Bolt.new Quick Reference](./templates/bolt/bolt-new-quick-reference.md)** - Quick copy-paste prompts for bolt.new
-- **[Bolt.new Complete Backend](./templates/bolt/bolt-new-complete-backend-template.md)** - Comprehensive backend template for any frontend project
-- **[Bolt.new Entity Templates](./templates/bolt/bolt-new-entity-templates.md)** - Ready-to-use templates for common entity types
-- **[Example Usage](./templates/bolt/example-usage.md)** - Step-by-step example of using the templates
+#### **Development Tools**
+- **[ESLint Configuration](../eslint.config.js)** - Code quality and linting rules
+- **[Tailwind Configuration](../tailwind.config.js)** - CSS framework configuration
+- **[Vite Configuration](../vite.config.ts)** - Build tool configuration
+- **[TypeScript Configuration](../tsconfig.json)** - TypeScript compiler options
 
-#### **Project Templates**
-- **[Project Template](./templates/git/PROJECT_TEMPLATE.md)** - Master template for new projects with placeholders
-- **[Template Usage Guide](./templates/git/TEMPLATE_USAGE_GUIDE.md)** - How to use the project template system
-- **[Template Quick Reference](./templates/git/TEMPLATE_QUICK_REFERENCE.md)** - Quick reference for template usage
-- **[Customization Script](./templates/git/customize_template.sh)** - Automated template customization script
-
-### **📁 Organization**
+### **📁 Documentation Organization**
 - **[guides/](./guides/)** - User guides and tutorials
+  - **[Quick Start Guide](./guides/quick-start.md)** - Get running in 5 minutes
+  - **[Setup Guide](./guides/setup-guide.md)** - Complete installation instructions
+  - **[Development Workflow](./guides/development-workflow.md)** - Development processes and best practices
+  - **[Contributing Guide](./guides/contributing.md)** - How to contribute to the project
 - **[technical/](./technical/)** - Technical documentation and troubleshooting
+  - **[API Documentation](./technical/API.md)** - REST API endpoints and usage
+  - **[Architecture Overview](./technical/architecture.md)** - System architecture and design
+  - **[Technical Error Log](./technical/error-log.md)** - Setup issues and resolutions
 - **[deployment/](./deployment/)** - Production deployment guides
-- **[testing/](./testing/)** - Testing procedures and QA documentation
-- **[features/](./features/)** - Feature-specific documentation
-- **[tools/](./tools/)** - Templates and utility files
+  - **[Deployment Guide](./deployment/README.md)** - Complete production deployment
 - **[references/](./references/)** - External resources and documentation
-- **[assets/](./assets/)** - Diagrams and visual documentation
-- **[archives/](./archives/)** - Historical documentation
-- **[scripts/](./scripts/)** - Documentation automation scripts
-- **[templates/](./templates/)** - Development templates and guides
-  - **[bolt/](./templates/bolt/)** - Bolt.new AI development templates
-  - **[git/](./templates/git/)** - Git repository and project templates
-- **[chats/](./chats/)** - Development session logs and chat exports
+  - **[Product Requirements](./references/prd.md)** - Complete feature specifications
 
 ---
 
@@ -101,7 +94,14 @@
 
 ## ✅ **Current Status**
 
-### **🟢 Development Status**
+### **🚀 Deployment Status**
+- ✅ **Production Live** - Successfully deployed at [dutchwallfort.com](https://dutchwallfort.com)
+- ✅ **Coolify Hosting** - Self-hosted on Coolify platform
+- ✅ **SSL Certificate** - Automatic HTTPS with Let's Encrypt
+- ✅ **Domain Connected** - Custom domain configuration
+- ✅ **Preview Deployments** - Automatic PR deployment for testing
+
+### **🔧 Development Status**
 - ✅ **Core Features** - Complete villa management system
 - ✅ **API Development** - Full REST API with all endpoints
 - ✅ **Frontend Interface** - Professional, mobile-first design
@@ -109,18 +109,24 @@
 - ✅ **Documentation** - Comprehensive documentation system
 - ✅ **Docker Deployment** - Production-ready containerization
 
-### **🔧 Recent Development**
-- ✅ **Mobile-First Design** - Complete responsive redesign
-- ✅ **Logo Integration** - Professional branding across all pages
-- ✅ **Booking Form Enhancement** - Improved UX with number inputs
-- ✅ **Room Detail Pages** - Dynamic routing for all room types
-- ✅ **Admin Dashboard** - Complete administrative interface
-- ✅ **Error Resolution** - Fixed all import and configuration issues
+### **🚀 Recent Achievements**
+- ✅ **Production Deployment** - Successfully deployed on Coolify (dutchwallfort.com)
+- ✅ **Environment Security** - Separated sensitive variables from codebase
+- ✅ **Docker Optimization** - Production-ready containerization with multi-stage builds
+- ✅ **Mobile-First Design** - Complete responsive redesign for all devices
+- ✅ **Logo Integration** - Professional branding across Header, Footer, and Admin
+- ✅ **Booking Form Enhancement** - Improved UX with number inputs and validation
+- ✅ **Room Detail Pages** - Dynamic routing for all room types (Premium, Deluxe, etc.)
+- ✅ **Admin Dashboard** - Complete administrative interface with full CRUD
+- ✅ **API Integration** - Fixed all Supabase import issues with proper REST API
+- ✅ **Error Resolution** - Comprehensive error logging and troubleshooting guides
 
-### **🚧 In Progress**
-- 🔄 **Advanced Features** - Payment integration and booking confirmation
-- 🔄 **Analytics Dashboard** - Booking analytics and reporting
-- 🔄 **Multi-language Support** - Internationalization features
+### **🚧 Future Enhancements**
+- 🔄 **Payment Integration** - Stripe/PayPal payment gateway
+- 🔄 **Email Automation** - Automated booking confirmations and notifications
+- 🔄 **Analytics Dashboard** - Advanced booking analytics and reporting
+- 🔄 **Multi-language Support** - Sinhala and Tamil translations
+- 🔄 **Advanced Search** - Filtering by dates, amenities, and price ranges
 
 ---
 
@@ -146,6 +152,53 @@
 - Automated testing suite
 - CI/CD pipeline setup
 - Advanced monitoring and logging
+
+---
+
+## 🔧 **Troubleshooting**
+
+### **Common Issues & Solutions**
+
+#### **🚀 Deployment Issues**
+- **Port conflicts**: `docker-compose down` then `docker-compose up -d`
+- **Build failures**: `docker system prune -f` then rebuild
+- **Database connection**: Wait for PostgreSQL to be healthy before starting API
+- **Environment variables**: Check `.env` file has correct values
+
+#### **💻 Development Issues**
+- **Dependencies**: Run `npm install` in both root and `server/` directories
+- **Database**: Use `docker-compose up postgres -d` for local development
+- **Ports**: Ensure ports 3000, 5173, 5432 are available
+- **CORS**: API runs on port 3000, frontend on 5173
+
+#### **🐳 Docker Issues**
+- **Permission denied**: Add user to docker group: `sudo usermod -aG docker $USER`
+- **Container not starting**: Check logs with `docker-compose logs [service]`
+- **Volume issues**: Use `docker-compose down -v` to reset volumes
+- **Memory issues**: Ensure at least 4GB RAM available
+
+#### **🔗 Quick Fixes**
+```bash
+# Reset everything
+docker-compose down -v
+docker system prune -f
+docker-compose up --build
+
+# Check service status
+docker-compose ps
+
+# View logs
+docker-compose logs -f [service]
+
+# Restart specific service
+docker-compose restart [service]
+```
+
+### **📞 Support Resources**
+- **[Technical Error Log](./technical/error-log.md)** - Detailed error solutions
+- **[API Documentation](./technical/API.md)** - Backend integration issues
+- **[Deployment Guide](./deployment/)** - Production deployment help
+- **GitHub Issues**: https://github.com/inamul5020/dutchwallfort.com/issues
 
 ---
 
@@ -178,6 +231,6 @@ This project is licensed under the MIT License - see the [LICENSE](../LICENSE) f
 
 **Built with ❤️ by Dutch Wall Fort Team**
 
-**Last Updated**: October 2, 2025
-**Version**: 1.0.0
-**Status**: ✅ **Production Ready**
+**Last Updated**: October 3, 2025
+**Version**: 1.0.1
+**Status**: ✅ **Production Live**

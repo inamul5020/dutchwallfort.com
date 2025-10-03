@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2025-10-03
+
+### Added
+- Production deployment on Coolify platform (dutchwallfort.com)
+- Preview deployment support for pull requests
+- Comprehensive environment variable management
+- Docker Compose optimization for production
+
+### Changed
+- Updated Docker configurations for Coolify compatibility
+- Improved environment variable handling (NODE_ENV, VITE_API_URL)
+- Enhanced deployment documentation with Coolify-specific guides
+- Updated main documentation structure and navigation
+
+### Fixed
+- Resolved Coolify deployment port allocation conflicts
+- Fixed Docker build issues with multi-stage builds
+- Corrected environment variable configuration for production
+- Fixed internal service communication in Docker containers
+
+### Security
+- Separated sensitive environment variables from codebase
+- Enhanced .gitignore for better security
+- Implemented production-grade JWT and session secrets
+- Added secure environment variable templates
+
 ## [Unreleased]
 
 ### Added
@@ -71,6 +97,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-**Last Updated**: October 2, 2025
-**Version**: 1.0.0
-**Status**: Initial Release
+**Last Updated**: October 3, 2025
+**Version**: 1.0.1
+**Status**: Production Release with Coolify Deployment
