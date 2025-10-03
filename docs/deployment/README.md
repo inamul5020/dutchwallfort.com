@@ -97,9 +97,31 @@ For Coolify self-hosting platform:
 
 1. **Connect Repository**: Add `https://github.com/inamul5020/dutchwallfort.com.git`
 2. **Environment Variables**: Set production secrets in Coolify dashboard
-3. **Docker Compose**: Use `docker-compose.prod.yml` for production deployment
-4. **Domain Configuration**: Configure your domain in Coolify
-5. **SSL**: Enable automatic SSL certificate generation
+3. **Docker Compose File**: Use `coolify-compose.yml` (simplified for Coolify)
+4. **Alternative**: Use `docker-compose.prod.yml` if Coolify supports custom dockerfiles
+5. **Domain Configuration**: Configure your domain in Coolify
+6. **SSL**: Enable automatic SSL certificate generation
+
+#### **Environment Variables for Coolify:**
+```bash
+# Database
+POSTGRES_USER=dutchwallfort_user
+POSTGRES_PASSWORD=your_secure_password_here
+POSTGRES_DB=dutchwallfort
+
+# API
+DATABASE_URL=postgresql://dutchwallfort_user:your_secure_password_here@postgres:5432/dutchwallfort
+JWT_SECRET=your_production_jwt_secret_min_32_chars
+SESSION_SECRET=your_production_session_secret_min_32_chars
+
+# Frontend
+VITE_API_URL=https://your-domain.com
+```
+
+#### **Troubleshooting Coolify Issues:**
+- If getting `vite: not found` errors, ensure Coolify is using production Dockerfiles
+- If `package.json` not found, check build context is set to repository root
+- Use `coolify-compose.yml` for simplest deployment
 
 ### **SSL Configuration**
 ```bash
