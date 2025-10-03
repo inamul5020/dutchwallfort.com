@@ -47,23 +47,59 @@ sudo apt install nginx -y
 sudo apt install certbot python3-certbot-nginx -y
 ```
 
-### **Application Deployment**
+### **Environment Configuration**
+
+Before deployment, configure your environment variables:
+
 ```bash
 # Clone repository
 git clone https://github.com/inamul5020/dutchwallfort.com.git
 cd dutchwallfort.com
 
-# Create environment file
+# Create and configure environment file
 cp .env.example .env
 nano .env  # Configure production settings
 
-# Start application
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
-
-# Check deployment
-docker-compose ps
-curl http://localhost/api/health
+# Required production environment variables:
+# POSTGRES_USER=your_db_user
+# POSTGRES_PASSWORD=your_secure_db_password
+# POSTGRES_DB=dutchwallfort
+# NODE_ENV=production
+# PORT=3000
+# DATABASE_URL=postgresql://user:password@host:port/database
+# JWT_SECRET=your_production_jwt_secret
+# SESSION_SECRET=your_production_session_secret
+# VITE_API_URL=https://your-api-domain.com
 ```
+
+### **Application Deployment**
+
+```bash
+# For development (uses docker-compose.yml)
+docker-compose up -d
+
+# For production (uses docker-compose.prod.yml)
+docker-compose -f docker-compose.prod.yml up -d
+
+# Check deployment status
+docker-compose ps
+
+# Check API health
+curl http://localhost:3000/api/health
+
+# Check frontend
+curl http://localhost
+```
+
+### **Coolify Deployment**
+
+For Coolify self-hosting platform:
+
+1. **Connect Repository**: Add `https://github.com/inamul5020/dutchwallfort.com.git`
+2. **Environment Variables**: Set production secrets in Coolify dashboard
+3. **Docker Compose**: Use `docker-compose.prod.yml` for production deployment
+4. **Domain Configuration**: Configure your domain in Coolify
+5. **SSL**: Enable automatic SSL certificate generation
 
 ### **SSL Configuration**
 ```bash
