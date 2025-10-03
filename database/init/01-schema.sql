@@ -75,6 +75,19 @@ CREATE TABLE IF NOT EXISTS bookings (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Contact messages table
+CREATE TABLE IF NOT EXISTS messages (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  phone VARCHAR(50),
+  subject VARCHAR(255) NOT NULL,
+  message TEXT NOT NULL,
+  status VARCHAR(50) DEFAULT 'unread',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Reviews table
 CREATE TABLE IF NOT EXISTS reviews (
   id SERIAL PRIMARY KEY,
@@ -92,6 +105,7 @@ CREATE INDEX IF NOT EXISTS idx_services_is_active ON services(is_active);
 CREATE INDEX IF NOT EXISTS idx_blog_posts_status ON blog_posts(status);
 CREATE INDEX IF NOT EXISTS idx_bookings_status ON bookings(status);
 CREATE INDEX IF NOT EXISTS idx_bookings_check_in ON bookings(check_in);
+CREATE INDEX IF NOT EXISTS idx_messages_status ON messages(status);
 CREATE INDEX IF NOT EXISTS idx_reviews_is_approved ON reviews(is_approved);
 
 -- Create function to update updated_at timestamp
@@ -117,6 +131,9 @@ CREATE TRIGGER update_blog_posts_updated_at BEFORE UPDATE ON blog_posts
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_bookings_updated_at BEFORE UPDATE ON bookings
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_messages_updated_at BEFORE UPDATE ON messages
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_reviews_updated_at BEFORE UPDATE ON reviews

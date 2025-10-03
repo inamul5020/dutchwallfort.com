@@ -1,15 +1,16 @@
 import React from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { 
-  Home, 
-  Bed, 
-  FileText, 
-  MapPin, 
-  Calendar, 
+import {
+  Home,
+  Bed,
+  FileText,
+  MapPin,
+  Calendar,
   LogOut,
   Menu,
-  X
+  X,
+  Mail
 } from 'lucide-react';
 
 const AdminLayout = () => {
@@ -23,6 +24,7 @@ const AdminLayout = () => {
     { name: 'Blog Posts', href: '/admin/blog', icon: FileText },
     { name: 'Services', href: '/admin/services', icon: MapPin },
     { name: 'Bookings', href: '/admin/bookings', icon: Calendar },
+    { name: 'Messages', href: '/admin/messages', icon: Mail },
   ];
 
   const isActive = (href: string) => {

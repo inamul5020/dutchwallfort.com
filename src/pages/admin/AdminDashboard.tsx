@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { roomsAPI, servicesAPI, blogAPI, bookingsAPI } from '../../lib/api';
-import { Bed, FileText, MapPin, Calendar } from 'lucide-react';
+import { roomsAPI, servicesAPI, blogAPI, bookingsAPI, messagesAPI } from '../../lib/api';
+import { Bed, FileText, MapPin, Calendar, Mail } from 'lucide-react';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -12,7 +12,9 @@ const AdminDashboard = () => {
     totalServices: 0,
     activeServices: 0,
     totalBookings: 0,
-    newBookings: 0
+    newBookings: 0,
+    totalMessages: 0,
+    unreadMessages: 0
   });
 
   const [recentBookings, setRecentBookings] = useState<any[]>([]);
@@ -25,11 +27,12 @@ const AdminDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       // Fetch stats
-      const [roomsResult, postsResult, servicesResult, bookingsResult] = await Promise.all([
+      const [roomsResult, postsResult, servicesResult, bookingsResult, messagesResult] = await Promise.all([
         roomsAPI.getAll(),
         blogAPI.getAll(),
         servicesAPI.getAll(),
-        bookingsAPI.getAll()
+        bookingsAPI.getAll(),
+        messagesAPI.getAll()
       ]);
 
       // Calculate stats
@@ -37,16 +40,19 @@ const AdminDashboard = () => {
       const posts = postsResult.data || [];
       const services = servicesResult.data || [];
       const bookings = bookingsResult.data || [];
+      const messages = messagesResult.data || [];
 
       setStats({
         totalRooms: rooms.length,
         activeRooms: rooms.filter(r => r.is_active).length,
         totalPosts: posts.length,
-        publishedPosts: posts.filter(p => p.is_published).length,
+        publishedPosts: posts.filter(p => p.status === 'published').length,
         totalServices: services.length,
         activeServices: services.filter(s => s.is_active).length,
         totalBookings: bookings.length,
-        newBookings: bookings.filter(b => b.status === 'new').length
+        newBookings: bookings.filter(b => b.status === 'pending').length,
+        totalMessages: messages.length,
+        unreadMessages: messages.filter(m => m.status === 'unread').length
       });
 
       // Fetch recent bookings
@@ -95,6 +101,14 @@ const AdminDashboard = () => {
       icon: Calendar,
       color: 'bg-amber-500',
       link: '/admin/bookings'
+    },
+    {
+      title: 'Messages',
+      value: stats.unreadMessages,
+      subtitle: 'Unread Messages',
+      icon: Mail,
+      color: 'bg-blue-500',
+      link: '/admin/messages'
     }
   ];
 
@@ -155,7 +169,7 @@ const AdminDashboard = () => {
               {recentBookings.map((booking) => (
                 <div key={booking.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div>
-                    <p className="font-medium text-gray-900">{booking.full_name}</p>
+                    <p className="font-medium text-gray-900">{booking.guest_name}</p>
                     <p className="text-sm text-gray-600">
                       {new Date(booking.check_in).toLocaleDateString()} - {new Date(booking.check_out).toLocaleDateString()}
                     </p>

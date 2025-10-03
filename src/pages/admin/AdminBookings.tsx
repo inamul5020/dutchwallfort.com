@@ -3,19 +3,18 @@ import { bookingsAPI } from '../../lib/api';
 import { Calendar, Users, Phone, Mail, MessageCircle, Filter } from 'lucide-react';
 
 interface Booking {
-  id: string;
-  full_name: string;
-  email: string;
-  phone: string;
+  id: number;
+  guest_name: string;
+  guest_email: string;
+  guest_phone: string;
   check_in: string;
   check_out: string;
-  adults: number;
-  children: number;
-  room_preference?: string;
+  room_id: number;
+  guests: number;
   message?: string;
-  contact_method: string;
   status: string;
   created_at: string;
+  updated_at: string;
 }
 
 const AdminBookings = () => {
@@ -38,9 +37,9 @@ const AdminBookings = () => {
     }
   };
 
-  const updateBookingStatus = async (id: string, newStatus: string) => {
+  const updateBookingStatus = async (id: number, newStatus: string) => {
     try {
-      await bookingsAPI.updateStatus(parseInt(id), newStatus);
+      await bookingsAPI.updateStatus(id, newStatus);
       fetchBookings();
     } catch (error) {
       console.error('Error updating booking status:', error);
@@ -53,7 +52,7 @@ const AdminBookings = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'new':
+      case 'pending':
         return 'bg-yellow-100 text-yellow-800';
       case 'confirmed':
         return 'bg-green-100 text-green-800';
@@ -95,7 +94,7 @@ const AdminBookings = () => {
           <div className="flex space-x-2">
             {[
               { key: 'all', label: 'All Bookings' },
-              { key: 'new', label: 'New' },
+              { key: 'pending', label: 'Pending' },
               { key: 'confirmed', label: 'Confirmed' },
               { key: 'cancelled', label: 'Cancelled' }
             ].map((filter) => (
@@ -124,7 +123,7 @@ const AdminBookings = () => {
                   <Calendar className="text-amber-600" size={20} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">{booking.full_name}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">{booking.guest_name}</h3>
                   <p className="text-sm text-gray-600">
                     Inquiry received: {new Date(booking.created_at).toLocaleDateString()}
                   </p>
@@ -137,7 +136,7 @@ const AdminBookings = () => {
                   onChange={(e) => updateBookingStatus(booking.id, e.target.value)}
                   className={`px-3 py-1 rounded-full text-xs font-medium border-0 ${getStatusColor(booking.status)}`}
                 >
-                  <option value="new">New</option>
+                  <option value="pending">Pending</option>
                   <option value="confirmed">Confirmed</option>
                   <option value="cancelled">Cancelled</option>
                 </select>
@@ -165,9 +164,7 @@ const AdminBookings = () => {
                 <Users size={16} className="text-gray-400" />
                 <div>
                   <p className="text-xs text-gray-500">Guests</p>
-                  <p className="text-sm font-medium">
-                    {booking.adults} adults{booking.children > 0 && `, ${booking.children} children`}
-                  </p>
+                  <p className="text-sm font-medium">{booking.guests} guests</p>
                 </div>
               </div>
               
@@ -188,23 +185,22 @@ const AdminBookings = () => {
                 <div className="space-y-1">
                   <div className="flex items-center space-x-2">
                     <Mail size={14} className="text-gray-400" />
-                    <a href={`mailto:${booking.email}`} className="text-sm text-amber-600 hover:text-amber-800">
-                      {booking.email}
+                    <a href={`mailto:${booking.guest_email}`} className="text-sm text-amber-600 hover:text-amber-800">
+                      {booking.guest_email}
                     </a>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Phone size={14} className="text-gray-400" />
-                    <a href={`tel:${booking.phone}`} className="text-sm text-amber-600 hover:text-amber-800">
-                      {booking.phone}
+                    <a href={`tel:${booking.guest_phone}`} className="text-sm text-amber-600 hover:text-amber-800">
+                      {booking.guest_phone}
                     </a>
                   </div>
-                  <p className="text-xs text-gray-500">Prefers: {booking.contact_method}</p>
                 </div>
               </div>
               
               <div>
-                <p className="text-xs text-gray-500 mb-1">Room Preference</p>
-                <p className="text-sm font-medium">{booking.room_preference || 'Any available room'}</p>
+                <p className="text-xs text-gray-500 mb-1">Room ID</p>
+                <p className="text-sm font-medium">Room #{booking.room_id}</p>
               </div>
             </div>
 
@@ -217,15 +213,15 @@ const AdminBookings = () => {
 
             <div className="mt-4 flex space-x-3">
               <a
-                href={`mailto:${booking.email}?subject=Re: Your booking inquiry for Dutch Wall Fort&body=Dear ${booking.full_name},%0D%0A%0D%0AThank you for your interest in Dutch Wall Fort.%0D%0A%0D%0A`}
+                href={`mailto:${booking.guest_email}?subject=Re: Your booking inquiry for Dutch Wall Fort&body=Dear ${booking.guest_name},%0D%0A%0D%0AThank you for your interest in Dutch Wall Fort.%0D%0A%0D%0A`}
                 className="bg-amber-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-amber-700 transition-colors duration-200 inline-flex items-center"
               >
                 <Mail size={16} className="mr-2" />
                 Reply via Email
               </a>
-              
+
               <a
-                href={`https://wa.me/${booking.phone.replace(/[^0-9]/g, '')}?text=Hello ${booking.full_name}, thank you for your booking inquiry for Dutch Wall Fort.`}
+                href={`https://wa.me/${booking.guest_phone.replace(/[^0-9]/g, '')}?text=Hello ${booking.guest_name}, thank you for your booking inquiry for Dutch Wall Fort.`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors duration-200 inline-flex items-center"

@@ -9,6 +9,7 @@ import roomsRoutes from './routes/rooms.js';
 import servicesRoutes from './routes/services.js';
 import bookingsRoutes from './routes/bookings.js';
 import blogRoutes from './routes/blog.js';
+import messagesRoutes from './routes/messages.js';
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use('/api/rooms', roomsRoutes);
 app.use('/api/services', servicesRoutes);
 app.use('/api/bookings', bookingsRoutes);
 app.use('/api/blog', blogRoutes);
+app.use('/api/messages', messagesRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

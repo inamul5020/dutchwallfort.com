@@ -1,4 +1,5 @@
 import { query } from '../config/database.js';
+import { sendBookingConfirmation } from '../utils/email.js';
 
 export const getAllBookings = async (req, res) => {
   try {
@@ -35,7 +36,15 @@ export const createBooking = async (req, res) => {
       [guest_name, guest_email, guest_phone, check_in, check_out, room_id, guests, message]
     );
 
-    res.status(201).json({ booking: result.rows[0] });
+    const booking = result.rows[0];
+
+    // Send confirmation email (don't block the response on email failure)
+    sendBookingConfirmation(booking).catch(emailError => {
+      console.error('Failed to send booking confirmation email:', emailError);
+      // Email failure shouldn't break the booking creation
+    });
+
+    res.status(201).json({ booking });
   } catch (error) {
     console.error('Create booking error:', error);
     res.status(500).json({ error: 'Failed to create booking' });

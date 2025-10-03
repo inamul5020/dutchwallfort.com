@@ -3,7 +3,7 @@
 -- Insert admin user (password: admin123)
 -- Note: This is a bcrypt hash for 'admin123' - you should change this in production
 INSERT INTO users (email, password, name, role) VALUES
-('admin@dutchwallfort.com', '$2b$10$rOvHPGkwMtFZf.0hQZ8zOOQQy8JkH4kXaYZQqI5YnKH4WQH4KqH4K', 'Admin User', 'admin')
+('admin@dutchwallfort.com', '$2b$10$vZaPiDrNS0kGdODFMnQU6OOPDYLlqbaRBugYjwUoM0fLchF7BYMLW', 'Admin User', 'admin')
 ON CONFLICT (email) DO NOTHING;
 
 -- Insert room data

@@ -75,4 +75,13 @@ export const blogAPI = {
   delete: (id: number) => api.delete(`/blog/${id}`),
 };
 
+export const messagesAPI = {
+  getAll: () => api.get('/messages'),
+  getById: (id: number) => api.get(`/messages/${id}`),
+  create: (data: any) => api.post('/messages', data),
+  updateStatus: (id: number, status: string) =>
+    api.patch(`/messages/${id}/status`, { status }),
+  delete: (id: number) => api.delete(`/messages/${id}`),
+};
+
 export default api;
