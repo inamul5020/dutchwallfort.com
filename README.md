@@ -429,6 +429,65 @@ If you see no rooms or data in the admin dashboard:
 - Check API URL: `VITE_API_URL=http://localhost:3000`
 - Check browser console for errors
 
+#### Admin Dashboard Issues
+
+##### Rooms Not Loading
+If admin dashboard shows "Rooms count: 0" or empty table:
+
+1. **Check CORS Headers**:
+   ```bash
+   curl -v -H "Origin: http://localhost:5173" http://localhost:3000/api/rooms
+   ```
+   Should show `Access-Control-Allow-Origin: *` in headers.
+
+2. **Check API Response**:
+   ```bash
+   curl -s http://localhost:3000/api/rooms | head -c 200
+   ```
+   Should return JSON with room data.
+
+3. **Check Browser Console**:
+   - Open DevTools (F12) → Console tab
+   - Look for CORS errors or network errors
+   - Should see "API Response received" logs
+
+4. **Verify Environment Variables**:
+   ```bash
+   docker-compose exec frontend env | grep VITE_API_URL
+   ```
+   Should show `VITE_API_URL=http://localhost:3000`
+
+##### CORS Errors
+If you see "Access to XMLHttpRequest blocked by CORS policy":
+
+1. **Check Backend CORS Headers**:
+   - Backend should include CORS headers in all API responses
+   - OPTIONS requests should be handled for preflight
+
+2. **Verify API Routes**:
+   - All API routes should have CORS headers
+   - Check `/backend/app/api/rooms/route.ts` for proper CORS setup
+
+##### Network Errors
+If you see "ERR_NAME_NOT_RESOLVED" or "ERR_FAILED":
+
+1. **Check Port Conflicts**:
+   ```bash
+   ss -tlnp | grep :3000
+   ```
+   Should show only the backend container.
+
+2. **Restart Services**:
+   ```bash
+   docker-compose down && docker-compose up -d
+   ```
+
+3. **Check Docker Network**:
+   ```bash
+   docker-compose exec frontend wget -qO- http://backend:3000/api/rooms
+   ```
+   Should work from within containers.
+
 ## 🔮 Future Enhancements
 
 ### Planned Features
@@ -439,7 +498,7 @@ If you see no rooms or data in the admin dashboard:
 - [ ] Advanced search and filtering
 - [ ] Calendar integration
 - [ ] Review system
-- [ ] Admin dashboard
+- [x] Admin dashboard
 
 ### Technical Improvements
 - [ ] Database indexing optimization
