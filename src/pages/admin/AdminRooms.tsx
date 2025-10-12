@@ -4,50 +4,66 @@ import { roomsAPI } from '../../lib/api';
 import { Bed, Plus, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
 
 interface Room {
-  id: string;
+  id: number;
   slug: string;
   name: string;
-  short_description: string;
+  shortDescription: string;
   capacity: number;
   beds: string;
-  price_from: number;
-  is_active: boolean;
-  created_at: string;
+  price: string;
+  isActive: boolean;
+  createdAt: string;
 }
 
 const AdminRooms = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  console.log('AdminRooms component rendered');
+  console.log('Current rooms state:', rooms);
+  console.log('Current loading state:', isLoading);
+
   useEffect(() => {
+    console.log('useEffect triggered');
     fetchRooms();
   }, []);
 
   const fetchRooms = async () => {
     try {
+      console.log('Fetching rooms...');
+      console.log('API URL:', import.meta.env.VITE_API_URL);
+      console.log('Full API base URL:', `${import.meta.env.VITE_API_URL}/api`);
+      console.log('About to call roomsAPI.getAll()');
       const response = await roomsAPI.getAll();
-      setRooms(response.data || []);
+      console.log('API Response received:', response);
+      console.log('API Response Data:', response.data);
+      console.log('API Response Success:', response.data?.success);
+      console.log('API Response Count:', response.data?.count);
+      setRooms(response.data?.data || []);
     } catch (error) {
       console.error('Error fetching rooms:', error);
+      console.error('Error details:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      console.error('Error message:', error.message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const toggleRoomStatus = async (id: string, currentStatus: boolean) => {
+  const toggleRoomStatus = async (id: number, currentStatus: boolean) => {
     try {
-      await roomsAPI.update(parseInt(id), { is_active: !currentStatus });
+      await roomsAPI.update(id, { isActive: !currentStatus });
       fetchRooms();
     } catch (error) {
       console.error('Error updating room status:', error);
     }
   };
 
-  const deleteRoom = async (id: string) => {
+  const deleteRoom = async (id: number) => {
     if (!confirm('Are you sure you want to delete this room?')) return;
 
     try {
-      await roomsAPI.delete(parseInt(id));
+      await roomsAPI.delete(id);
       fetchRooms();
     } catch (error) {
       console.error('Error deleting room:', error);
@@ -58,12 +74,18 @@ const AdminRooms = () => {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
+        <p className="ml-4">Loading rooms...</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
+      <div className="bg-blue-100 p-4 rounded-md">
+        <p className="text-blue-800">Debug: AdminRooms component is rendering</p>
+        <p className="text-blue-800">Rooms count: {rooms.length}</p>
+        <p className="text-blue-800">Loading: {isLoading.toString()}</p>
+      </div>
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900">Room Management</h1>
         <Link
@@ -104,7 +126,7 @@ const AdminRooms = () => {
                     <Bed className="text-amber-600 mr-3" size={20} />
                     <div>
                       <div className="text-sm font-medium text-gray-900">{room.name}</div>
-                      <div className="text-sm text-gray-500">{room.short_description}</div>
+                      <div className="text-sm text-gray-500">{room.shortDescription}</div>
                     </div>
                   </div>
                 </td>
@@ -114,19 +136,19 @@ const AdminRooms = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">
-                    LKR {room.price_from.toLocaleString()}
+                    LKR {parseInt(room.price).toLocaleString()}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <button
-                    onClick={() => toggleRoomStatus(room.id, room.is_active)}
+                    onClick={() => toggleRoomStatus(room.id, room.isActive)}
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      room.is_active
+                      room.isActive
                         ? 'bg-green-100 text-green-800'
                         : 'bg-red-100 text-red-800'
                     }`}
                   >
-                    {room.is_active ? (
+                    {room.isActive ? (
                       <>
                         <Eye size={12} className="mr-1" />
                         Active
