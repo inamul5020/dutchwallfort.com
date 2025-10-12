@@ -68,3 +68,12 @@ INSERT INTO reviews (guest_name, rating, comment, is_approved) VALUES
 ('Michael Chen', 5, 'Best accommodation in Galle Fort! Beautiful colonial architecture, modern amenities, and exceptional service. The family room was perfect for our group of four.', true),
 ('Emma Williams', 4, 'Great location and comfortable rooms. The staff helped us arrange a fantastic day tour of the southern coast. Would definitely recommend to friends visiting Sri Lanka.', true)
 ON CONFLICT DO NOTHING;
+
+-- Insert sample bookings
+INSERT INTO bookings (guest_name, guest_email, guest_phone, check_in, check_out, room_id, guests, message, status) VALUES
+('John Smith', 'john.smith@email.com', '+1-555-0123', '2024-12-15', '2024-12-18', 1, 2, 'Looking forward to our stay in Galle Fort!', 'confirmed'),
+('Maria Garcia', 'maria.garcia@email.com', '+44-20-7946-0958', '2024-12-20', '2024-12-23', 2, 3, 'Family vacation with our daughter. Please arrange airport pickup.', 'pending'),
+('David Lee', 'david.lee@email.com', '+61-2-9374-4000', '2024-12-25', '2024-12-28', 3, 2, 'Anniversary trip. Would love a room with a view.', 'confirmed'),
+('Anna Kowalski', 'anna.kowalski@email.com', '+48-22-123-4567', '2024-12-30', '2025-01-02', 4, 2, 'New Year celebration in Galle Fort!', 'pending'),
+('Robert Brown', 'robert.brown@email.com', '+1-555-0456', '2025-01-05', '2025-01-10', 5, 12, 'Corporate retreat. Need the whole villa for our team.', 'confirmed')
+ON CONFLICT DO NOTHING;

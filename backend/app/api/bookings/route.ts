@@ -23,10 +23,27 @@ export async function GET() {
       orderBy: { createdAt: 'desc' }
     });
     
+    // Map database fields to frontend expected fields
+    const mappedBookings = bookings.map(booking => ({
+      ...booking,
+      full_name: booking.guestName,
+      email: booking.guestEmail,
+      phone: booking.guestPhone,
+      check_in: booking.checkIn,
+      check_out: booking.checkOut,
+      adults: booking.guests,
+      children: 0, // Default value since we don't track children separately
+      room_preference: booking.room?.name || 'Not specified',
+      message: booking.message || '',
+      contact_method: 'email', // Default value
+      created_at: booking.createdAt,
+      updated_at: booking.updatedAt
+    }));
+
     return NextResponse.json({
       success: true,
-      data: bookings,
-      count: bookings.length
+      data: mappedBookings,
+      count: mappedBookings.length
     }, {
       headers: {
         'Access-Control-Allow-Origin': '*',

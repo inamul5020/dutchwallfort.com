@@ -35,10 +35,20 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: 'desc' }
     });
     
+    // Map database fields to frontend expected fields
+    const mappedPosts = posts.map(post => ({
+      ...post,
+      is_published: post.status === 'published',
+      published_at: post.status === 'published' ? post.publishedAt : null,
+      created_at: post.createdAt,
+      updated_at: post.updatedAt,
+      author: post.author?.name || 'Unknown Author'
+    }));
+
     return NextResponse.json({
       success: true,
-      data: posts,
-      count: posts.length
+      data: mappedPosts,
+      count: mappedPosts.length
     }, {
       headers: {
         'Access-Control-Allow-Origin': '*',

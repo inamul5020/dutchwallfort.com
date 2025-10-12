@@ -44,10 +44,10 @@ export const authAPI = {
 
 export const roomsAPI = {
   getAll: () => api.get('/rooms'),
-  getById: (id: number) => api.get(`/rooms/${id}`),
+  getById: (id: number) => api.get(`/rooms/by-id/${id}`),
   create: (data: any) => api.post('/rooms', data),
-  update: (id: number, data: any) => api.put(`/rooms/${id}`, data),
-  delete: (id: number) => api.delete(`/rooms/${id}`),
+  update: (id: number, data: any) => api.put(`/rooms/by-id/${id}`, data),
+  delete: (id: number) => api.delete(`/rooms/by-id/${id}`),
 };
 
 export const servicesAPI = {

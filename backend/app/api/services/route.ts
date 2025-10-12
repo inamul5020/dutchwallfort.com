@@ -21,10 +21,21 @@ export async function GET() {
       orderBy: { createdAt: 'desc' }
     });
     
+    // Map database fields to frontend expected fields
+    const mappedServices = services.map(service => ({
+      ...service,
+      is_active: service.isActive,
+      created_at: service.createdAt,
+      updated_at: service.updatedAt,
+      price_from: parseFloat(service.price),
+      price_currency: 'LKR',
+      category: service.type
+    }));
+
     return NextResponse.json({
       success: true,
-      data: services,
-      count: services.length
+      data: mappedServices,
+      count: mappedServices.length
     }, {
       headers: {
         'Access-Control-Allow-Origin': '*',

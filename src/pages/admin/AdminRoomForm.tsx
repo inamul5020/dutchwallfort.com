@@ -6,14 +6,14 @@ import { ArrowLeft, Save } from 'lucide-react';
 interface RoomFormData {
   slug: string;
   name: string;
-  short_description: string;
-  long_description: string;
+  shortDescription: string;
+  longDescription: string;
   capacity: number;
   beds: string;
   amenities: string[];
-  price_from: number;
-  gallery: string[];
-  is_active: boolean;
+  price: string;
+  images: string[];
+  isActive: boolean;
 }
 
 const AdminRoomForm = () => {
@@ -24,14 +24,14 @@ const AdminRoomForm = () => {
   const [formData, setFormData] = useState<RoomFormData>({
     slug: '',
     name: '',
-    short_description: '',
-    long_description: '',
+    shortDescription: '',
+    longDescription: '',
     capacity: 2,
     beds: '',
     amenities: [],
-    price_from: 0,
-    gallery: [],
-    is_active: true,
+    price: '0',
+    images: [],
+    isActive: true,
   });
 
   const [amenityInput, setAmenityInput] = useState('');
@@ -49,7 +49,18 @@ const AdminRoomForm = () => {
     try {
       const response = await roomsAPI.getById(parseInt(id!));
       if (response.data) {
-        setFormData(response.data);
+        setFormData({
+          slug: response.data.slug || '',
+          name: response.data.name || '',
+          shortDescription: response.data.shortDescription || '',
+          longDescription: response.data.longDescription || '',
+          capacity: response.data.capacity || 2,
+          beds: response.data.beds || '',
+          amenities: response.data.amenities || [],
+          price: response.data.price || '0',
+          images: response.data.images || [],
+          isActive: response.data.isActive !== undefined ? response.data.isActive : true,
+        });
       }
     } catch (error) {
       console.error('Error fetching room:', error);
@@ -64,8 +75,16 @@ const AdminRoomForm = () => {
 
     try {
       const dataToSave = {
-        ...formData,
-        updated_at: new Date().toISOString(),
+        slug: formData.slug,
+        name: formData.name,
+        shortDescription: formData.shortDescription,
+        longDescription: formData.longDescription,
+        capacity: formData.capacity,
+        beds: formData.beds,
+        amenities: formData.amenities,
+        price: parseFloat(formData.price),
+        images: formData.images,
+        isActive: formData.isActive,
       };
 
       if (isEditing) {
@@ -119,7 +138,7 @@ const AdminRoomForm = () => {
     if (galleryInput.trim()) {
       setFormData(prev => ({
         ...prev,
-        gallery: [...prev.gallery, galleryInput.trim()],
+        images: [...prev.images, galleryInput.trim()],
       }));
       setGalleryInput('');
     }
@@ -128,7 +147,7 @@ const AdminRoomForm = () => {
   const removeGalleryImage = (index: number) => {
     setFormData(prev => ({
       ...prev,
-      gallery: prev.gallery.filter((_, i) => i !== index),
+      images: prev.images.filter((_, i) => i !== index),
     }));
   };
 
@@ -221,11 +240,11 @@ const AdminRoomForm = () => {
             </label>
             <input
               type="number"
-              name="price_from"
+              name="price"
               required
               min="0"
               step="0.01"
-              value={formData.price_from}
+              value={formData.price}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500"
             />
@@ -235,8 +254,8 @@ const AdminRoomForm = () => {
             <label className="flex items-center space-x-2 text-sm font-medium text-gray-700">
               <input
                 type="checkbox"
-                name="is_active"
-                checked={formData.is_active}
+                name="isActive"
+                checked={formData.isActive}
                 onChange={handleCheckbox}
                 className="rounded border-gray-300 text-amber-600 focus:ring-amber-500"
               />
@@ -251,9 +270,9 @@ const AdminRoomForm = () => {
           </label>
           <input
             type="text"
-            name="short_description"
+            name="shortDescription"
             required
-            value={formData.short_description}
+            value={formData.shortDescription}
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500"
           />
@@ -264,10 +283,10 @@ const AdminRoomForm = () => {
             Long Description
           </label>
           <textarea
-            name="long_description"
+            name="longDescription"
             required
             rows={4}
-            value={formData.long_description}
+            value={formData.longDescription}
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500"
           />
@@ -335,7 +354,7 @@ const AdminRoomForm = () => {
             </button>
           </div>
           <div className="space-y-2">
-            {formData.gallery.map((image, index) => (
+            {formData.images.map((image, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between p-2 bg-gray-50 rounded-md"
