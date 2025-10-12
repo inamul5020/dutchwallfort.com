@@ -31,8 +31,24 @@ dutchwallfort.com/
 
 ### 1. Clone and Start All Services
 ```bash
-git clone <repository-url>
+git clone https://github.com/inamul5020/dutchwallfort.com.git
 cd dutchwallfort.com
+docker-compose up -d
+```
+
+### 1.1. Database Setup (Important!)
+If the database appears empty, run the setup script:
+```bash
+./setup-database.sh
+```
+
+Or manually reset the database:
+```bash
+# Stop services and remove database volume
+docker-compose down
+docker volume rm dutchwallfortcom_postgres_data
+
+# Start services (will recreate database with seed data)
 docker-compose up -d
 ```
 
@@ -378,6 +394,40 @@ npm run db:studio
 - ✅ Type-safe operations
 - ✅ Scalable architecture
 - ✅ Docker containerization
+
+## 🐛 Troubleshooting
+
+### Database Issues
+
+#### Empty Database (No Rooms/Data)
+If you see no rooms or data in the admin dashboard:
+
+1. **Quick Fix**: Run the setup script
+   ```bash
+   ./setup-database.sh
+   ```
+
+2. **Manual Fix**: Reset database volume
+   ```bash
+   docker-compose down
+   docker volume rm dutchwallfortcom_postgres_data
+   docker-compose up -d
+   ```
+
+3. **Verify Data**: Check if data exists
+   ```bash
+   docker-compose exec postgres psql -U postgres -d dutchwallfort -c "SELECT COUNT(*) FROM rooms;"
+   ```
+
+#### API Connection Issues
+- Check if backend is running: `docker-compose ps`
+- Test API health: `curl http://localhost:3000/api/health`
+- Check logs: `docker-compose logs backend`
+
+#### Frontend Issues
+- Verify frontend is running: `docker-compose ps`
+- Check API URL: `VITE_API_URL=http://localhost:3000`
+- Check browser console for errors
 
 ## 🔮 Future Enhancements
 
