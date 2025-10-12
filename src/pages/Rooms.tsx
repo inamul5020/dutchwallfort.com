@@ -1,105 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Users, Wifi, Wind, Bath, Coffee, MapPin, ArrowRight } from 'lucide-react';
+import { roomsAPI } from '../lib/api';
+
+interface Room {
+  id: number;
+  slug: string;
+  name: string;
+  shortDescription: string;
+  longDescription: string;
+  capacity: number;
+  beds: string;
+  amenities: string[];
+  price: string;
+  images: string[];
+  isActive: boolean;
+}
 
 const Rooms = () => {
-  const rooms = [
-    {
-      id: "deluxe-family-room",
-      name: "Deluxe Family Room",
-      shortDescription: "Family Room — 4 guests, 1 double + 2 singles",
-      description: "Our most spacious accommodation, perfect for families. Features a comfortable double bed and two single beds, with a private balcony overlooking the garden. The room includes modern amenities while maintaining the villa's Dutch colonial charm.",
-      capacity: 4,
-      beds: "1 double bed + 2 single beds",
-      amenities: ["AC", "Private bathroom", "Balcony", "Garden view", "Free Wi-Fi", "Work desk"],
-      priceFrom: "15,000",
-      image: "/images/bedroom1_1.jpg",
-      gallery: [
-        "/images/bedroom1_1.jpg",
-        "/images/bedroom1_2.jpg",
-        "/images/bedroom1_3.jpg",
-        "/images/bedroom1_4.jpg",
-        "/images/bedroom1_5.jpg",
-        "/images/bedroom1_6.jpg",
-        "/images/bedroom1_7.jpg"
-      ]
-    },
-    {
-      id: "superior-room",
-      name: "Superior Room",
-      shortDescription: "Superior Room — 3 guests, 1 double + 1 single",
-      description: "Comfortable and stylish room with a double bed and single bed. Features a work desk area and private entrance, making it ideal for couples or small families. The room combines modern comfort with traditional architectural details.",
-      capacity: 3,
-      beds: "1 double bed + 1 single bed",
-      amenities: ["AC", "Private bathroom", "Private entrance", "Work desk", "Free Wi-Fi", "Mini fridge"],
-      priceFrom: "12,000",
-      image: "/images/bedroom2_1.jpg",
-      gallery: [
-        "/images/bedroom2_1.jpg",
-        "/images/bedroom2_2.jpg",
-        "/images/bedroom2_3.jpg",
-        "/images/bedroom2_4.jpg",
-        "/images/bedroom2_5.jpg"
-      ]
-    },
-    {
-      id: "standard-room",
-      name: "Standard Room",
-      shortDescription: "Standard Room — 2 guests, 1 double bed",
-      description: "Cozy and comfortable room with a double bed, perfect for couples. Despite being our standard room, it includes all essential amenities and maintains the high standards of comfort and cleanliness that Dutch Wall Fort is known for.",
-      capacity: 2,
-      beds: "1 double bed",
-      amenities: ["AC", "Private bathroom", "Free Wi-Fi", "Breakfast included", "Daily housekeeping", "Safe"],
-      priceFrom: "9,000",
-      image: "/images/bedroom3_1.jpg",
-      gallery: [
-        "/images/bedroom3_1.jpg",
-        "/images/bedroom3_2.jpg",
-        "/images/bedroom3_3.jpg",
-        "/images/bedroom3_4.jpg",
-        "/images/bedroom3_5.jpg",
-        "/images/bedroom3_6.jpg",
-        "/images/bedroom3_7.jpg",
-        "/images/bedroom3_8.jpg"
-      ]
-    },
-    {
-      id: "premium-room",
-      name: "Premium Room",
-      shortDescription: "Premium Room — 2-3 guests, spacious with modern amenities",
-      description: "Our premium accommodation offers extra space and luxury amenities. Perfect for guests seeking additional comfort and style during their stay in Galle Fort.",
-      capacity: 3,
-      beds: "1 double bed + 1 single bed",
-      amenities: ["AC", "Private bathroom", "Balcony", "Premium furnishing", "Free Wi-Fi", "Mini bar"],
-      priceFrom: "18,000",
-      image: "/images/bedroom4_1.jpg",
-      gallery: [
-        "/images/bedroom4_1.jpg",
-        "/images/bedroom4_2.jpg",
-        "/images/bedroom4_3.jpg",
-        "/images/bedroom4_4.jpg",
-        "/images/bedroom4_5.jpg"
-      ]
-    },
-    {
-      id: "whole-villa",
-      name: "Whole Villa Rental",
-      shortDescription: "Entire Villa — Up to 12 guests, all rooms included",
-      description: "Book the entire Dutch Wall Fort villa for your group, family reunion, or special celebration. Includes all four rooms, common areas, terrace, kitchen access, and exclusive use of the property. Perfect for larger groups seeking privacy and authentic Galle Fort experience.",
-      capacity: 12,
-      beds: "4 rooms: 3 double beds + 4 single beds",
-      amenities: ["All rooms included", "Exclusive villa access", "Kitchen access", "Terrace & garden", "Group breakfast", "Concierge service"],
-      priceFrom: "45,000",
-      image: "/images/Exterior_1.jpg",
-      gallery: [
-        "/images/Exterior_1.jpg",
-        "/images/livingroom.jpg",
-        "/images/dining area_1.jpg",
-        "/images/balcony_1.jpg",
-        "/images/kitchen_1.jpg"
-      ]
-    }
-  ];
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const response = await roomsAPI.getAll();
+        setRooms(response.data?.data || []);
+      } catch (error) {
+        console.error('Error fetching rooms:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRooms();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
+      </div>
+    );
+  }
+
 
   const getAmenityIcon = (amenity: string) => {
     const iconMap: { [key: string]: React.ComponentType<{ size?: number; className?: string }> } = {
@@ -143,13 +87,13 @@ const Rooms = () => {
               <div key={room.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]">
                 <div className="relative h-48 sm:h-56 md:h-64">
                   <img
-                    src={room.image}
+                    src={room.images?.[0] || '/images/placeholder.jpg'}
                     alt={room.name}
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />
                   <div className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-amber-600 text-white px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-medium shadow-lg">
-                    From LKR {room.priceFrom}
+                    From LKR {parseInt(room.price).toLocaleString()}
                   </div>
                 </div>
 
@@ -177,7 +121,7 @@ const Rooms = () => {
 
                   <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                     <Link
-                      to={`/rooms/${room.id}`}
+                      to={`/rooms/${room.slug}`}
                       className="flex-1 bg-amber-600 hover:bg-amber-700 text-white text-center py-2.5 px-4 rounded-md font-medium transition-all duration-200 inline-flex items-center justify-center text-sm sm:text-base hover:shadow-md"
                     >
                       View Details

@@ -19,32 +19,16 @@ const AdminRooms = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log('AdminRooms component rendered');
-  console.log('Current rooms state:', rooms);
-  console.log('Current loading state:', isLoading);
-
   useEffect(() => {
-    console.log('useEffect triggered');
     fetchRooms();
   }, []);
 
   const fetchRooms = async () => {
     try {
-      console.log('Fetching rooms...');
-      console.log('API URL:', import.meta.env.VITE_API_URL);
-      console.log('Full API base URL:', `${import.meta.env.VITE_API_URL}/api`);
-      console.log('About to call roomsAPI.getAll()');
       const response = await roomsAPI.getAll();
-      console.log('API Response received:', response);
-      console.log('API Response Data:', response.data);
-      console.log('API Response Success:', response.data?.success);
-      console.log('API Response Count:', response.data?.count);
       setRooms(response.data?.data || []);
     } catch (error) {
       console.error('Error fetching rooms:', error);
-      console.error('Error details:', error.response?.data);
-      console.error('Error status:', error.response?.status);
-      console.error('Error message:', error.message);
     } finally {
       setIsLoading(false);
     }
@@ -74,18 +58,12 @@ const AdminRooms = () => {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
-        <p className="ml-4">Loading rooms...</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div className="bg-blue-100 p-4 rounded-md">
-        <p className="text-blue-800">Debug: AdminRooms component is rendering</p>
-        <p className="text-blue-800">Rooms count: {rooms.length}</p>
-        <p className="text-blue-800">Loading: {isLoading.toString()}</p>
-      </div>
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900">Room Management</h1>
         <Link
