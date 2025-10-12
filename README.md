@@ -74,13 +74,14 @@ docker-compose up -d
 - 🔍 **SEO Optimized** - Meta tags and structured data
 
 ### Admin Dashboard
-- 🔐 **Secure Authentication** - JWT-based login system
-- 🏠 **Room Management** - Add, edit, delete rooms with images
-- 📅 **Booking Management** - View and manage guest bookings
-- 📝 **Blog Management** - Create and publish blog posts
-- 🎯 **Services Management** - Manage tours and services
-- 📧 **Message Management** - Handle contact form submissions
-- 📊 **Dashboard Overview** - Statistics and quick actions
+- 🔐 **Secure Authentication** - JWT-based login system ✅
+- 🏠 **Room Management** - Add, edit, delete rooms with images ✅
+- 📅 **Booking Management** - View and manage guest bookings ✅
+- 📝 **Blog Management** - Create and publish blog posts ✅
+- 🎯 **Services Management** - Manage tours and services ✅
+- 📧 **Message Management** - Handle contact form submissions ✅
+- 📊 **Dashboard Overview** - Statistics and quick actions ✅
+- 🔄 **Real-time Sync** - Live data synchronization with frontend
 
 ### Backend Features
 - 🚀 **Next.js Enterprise** - Production-ready API framework
@@ -99,9 +100,10 @@ docker-compose up -d
 ### Rooms Management
 - `GET /api/rooms` - List all active rooms
 - `GET /api/rooms/[slug]` - Get specific room by slug
+- `GET /api/rooms/by-id/[id]` - Get specific room by ID (Admin)
 - `POST /api/rooms` - Create new room (Admin)
-- `PUT /api/rooms/[slug]` - Update room (Admin)
-- `DELETE /api/rooms/[slug]` - Delete room (Admin)
+- `PUT /api/rooms/by-id/[id]` - Update room by ID (Admin)
+- `DELETE /api/rooms/by-id/[id]` - Delete room by ID (Admin)
 
 ### Services Management
 - `GET /api/services` - List all active services
@@ -229,6 +231,23 @@ The database is populated with 4 rooms:
 - **Linting**: ESLint 9
 - **Type Checking**: TypeScript
 - **Containerization**: Docker & Docker Compose
+
+## 🆕 Recent Updates & Fixes
+
+### v3.1.0 - Admin Dashboard & API Improvements
+- ✅ **Fixed Room Editing**: Resolved "Failed to load room data" issue
+- ✅ **Admin Data Sync**: All admin pages now display data correctly
+- ✅ **API Field Mapping**: Automatic mapping between database and frontend field formats
+- ✅ **CORS Headers**: Added proper CORS support to all API endpoints
+- ✅ **Sample Data**: Added sample booking data for testing
+- ✅ **New API Endpoints**: Added `/api/rooms/by-id/[id]` for room operations by ID
+- ✅ **Frontend Integration**: Updated frontend to use API data instead of hardcoded data
+
+### Key Technical Improvements
+- **Field Mapping**: Database `camelCase` fields automatically mapped to frontend `snake_case` expectations
+- **Error Handling**: Comprehensive error handling and user feedback
+- **Data Consistency**: Unified data source between frontend and admin dashboard
+- **API Architecture**: RESTful APIs with proper HTTP methods and status codes
 
 ## 🛠️ Development
 
@@ -396,6 +415,23 @@ npm run db:studio
 - ✅ Docker containerization
 
 ## 🐛 Troubleshooting
+
+### Recent Fixes Applied
+
+#### Room Editing Issues ✅ FIXED
+- **Issue**: "Failed to load room data" when editing rooms
+- **Solution**: Updated AdminRoomForm to use correct field mapping and API endpoints
+- **Status**: ✅ Resolved in v3.1.0
+
+#### Admin Dashboard Data Issues ✅ FIXED
+- **Issue**: Blogs, services, and bookings not showing data
+- **Solution**: Added proper field mapping in API responses
+- **Status**: ✅ Resolved in v3.1.0
+
+#### CORS Issues ✅ FIXED
+- **Issue**: Cross-origin requests blocked by browser
+- **Solution**: Added CORS headers to all API endpoints
+- **Status**: ✅ Resolved in v3.1.0
 
 ### Database Issues
 
