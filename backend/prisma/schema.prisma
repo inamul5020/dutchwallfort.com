@@ -1,0 +1,124 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("user")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  blogPosts BlogPost[]
+
+  @@map("users")
+}
+
+model Room {
+  id               Int      @id @default(autoincrement())
+  slug             String   @unique
+  name             String
+  shortDescription String   @map("short_description")
+  longDescription  String   @map("long_description")
+  capacity         Int
+  beds             String
+  amenities        Json     @default("[]")
+  price            Decimal  @db.Decimal(10, 2)
+  images           Json     @default("[]")
+  isActive         Boolean  @default(true) @map("is_active")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  bookings Booking[]
+
+  @@map("rooms")
+}
+
+model Service {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  name        String
+  description String
+  type        String
+  duration    String?
+  price       Decimal? @db.Decimal(10, 2)
+  features    Json     @default("[]")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("services")
+}
+
+model BlogPost {
+  id            Int      @id @default(autoincrement())
+  slug          String   @unique
+  title         String
+  excerpt       String
+  content       String
+  featuredImage String?  @map("featured_image")
+  authorId      Int      @map("author_id")
+  status        String   @default("draft")
+  publishedAt   DateTime? @map("published_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  author User @relation(fields: [authorId], references: [id])
+
+  @@map("blog_posts")
+}
+
+model Booking {
+  id         Int      @id @default(autoincrement())
+  guestName  String   @map("guest_name")
+  guestEmail String   @map("guest_email")
+  guestPhone String   @map("guest_phone")
+  checkIn    DateTime @map("check_in") @db.Date
+  checkOut   DateTime @map("check_out") @db.Date
+  roomId     Int      @map("room_id")
+  guests     Int
+  message    String?
+  status     String   @default("pending")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  room Room @relation(fields: [roomId], references: [id])
+
+  @@map("bookings")
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  status    String   @default("unread")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("messages")
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  guestName  String   @map("guest_name")
+  rating     Int
+  comment    String
+  isApproved Boolean  @default(false) @map("is_approved")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("reviews")
+}

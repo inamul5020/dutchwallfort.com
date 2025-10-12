@@ -1,105 +1,308 @@
+# Dutch Wall Fort - Hotel Booking Application
 
-# [Next.js Enterprise Boilerplate](https://blazity.com/open-source/nextjs-enterprise-boilerplate) 
+A modern hotel booking website with React frontend and Next.js Enterprise API backend, featuring luxury accommodation in Galle Fort, Sri Lanka.
 
-A production-ready template for building enterprise applications with Next.js. This boilerplate provides a solid foundation with carefully selected technologies and ready-to-go infrastructure to help you develop high-quality applications efficiently.
+## 🏗️ Project Architecture
 
-## Motivation
+```
+dutchwallfort.com/
+├── src/                    # React Frontend (Vite + TypeScript)
+├── backend/                # Next.js Enterprise API Backend
+│   ├── app/api/           # API Routes (Rooms, Bookings, Contact)
+│   └── prisma/            # Database schema and migrations
+├── database/              # Database initialization scripts
+├── docker-compose.yml     # Docker orchestration
+└── README.md             # This documentation
+```
 
-While most Next.js boilerplates focus on individual developer needs with excessive complexity, **next-enterprise** prioritizes strategic simplicity for enterprise teams. It offers a streamlined foundation with high-impact features that maximize developer productivity and accelerate time-to-market for business-critical applications.
+## 🚀 Quick Start with Docker
 
-<a href="https://blazity.com/">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="/assets/blazity-logo-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="/assets/blazity-logo-light.svg">
-  <img alt="Logo" align="right" height="80" src="/assets/blazity-logo-light.svg">
-</picture>
-</a>
+### Prerequisites
+- Docker & Docker Compose
+- Git
 
-> [!NOTE]
-> **Blazity** is a group of Next.js architects. We help organizations architect, optimize, and deploy high-performance Next.js applications at scale. Contact us at [contact@blazity.com](https://blazity.com) if you’d like to talk about your project.
+### 1. Clone and Start All Services
+```bash
+git clone <repository-url>
+cd dutchwallfort.com
+docker-compose up -d
+```
 
+### 2. Access Applications
+- **Frontend**: http://localhost:5173
+- **Backend API**: http://localhost:3000
+- **Database**: localhost:5432
 
+## 📊 Database Schema
 
-## Documentation
+### Rooms Table
+```sql
+CREATE TABLE rooms (
+    id SERIAL PRIMARY KEY,
+    slug VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    short_description TEXT NOT NULL,
+    long_description TEXT NOT NULL,
+    capacity INTEGER NOT NULL,
+    beds VARCHAR(255) NOT NULL,
+    amenities JSONB DEFAULT '[]',
+    price DECIMAL(10,2) NOT NULL,
+    images JSONB DEFAULT '[]',
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
 
-There is a separate documentation that explains its functionality, highlights core business values and technical decisions, provides guidelines for future development, and includes architectural diagrams.
+### Sample Data
+The database is populated with 4 rooms:
 
-We encourage you to [visit our docs (docs.blazity.com)](https://docs.blazity.com) to learn more
+1. **Deluxe Family Room** - 4 guests, LKR 15,000
+   - Images: bedroom1_1.jpg, bedroom1_2.jpg, bedroom1_3.jpg
 
-## Integrated features
+2. **Superior Room** - 3 guests, LKR 12,000
+   - Images: bedroom2_1.jpg, bedroom2_2.jpg, bedroom2_3.jpg
 
-### Boilerplate
-With this template you will get all the boilerplate features included:
+3. **Standard Room** - 2 guests, LKR 9,000
+   - Images: bedroom3_1.jpg, bedroom3_2.jpg
 
-* [Next.js 15](https://nextjs.org/) - Performance-optimized configuration using App Directory
-* [Tailwind CSS v4](https://tailwindcss.com/) - Utility-first CSS framework for efficient UI development
-* [ESlint 9](https://eslint.org/) and [Prettier](https://prettier.io/) - Code consistency and error prevention
-* [Corepack](https://github.com/nodejs/corepack) & [pnpm](https://pnpm.io/) as the package manager - For project management without compromises 
-* [Strict TypeScript](https://www.typescriptlang.org/) - Enhanced type safety with carefully crafted config and [ts-reset](https://github.com/total-typescript/ts-reset) library
-* [GitHub Actions](https://github.com/features/actions) - Pre-configured workflows including bundle size and performance tracking
-* Perfect Lighthouse score - Optimized performance metrics
-* [Bundle analyzer](https://www.npmjs.com/package/@next/bundle-analyzer) - Monitor and manage bundle size during development
-* Testing suite - [Vitest](https://vitest.dev), [React Testing Library](https://testing-library.com/react), and [Playwright](https://playwright.dev/) for comprehensive testing
-* [Storybook](https://storybook.js.org/) - Component development and documentation
-* Advanced testing - Smoke and acceptance testing capabilities
-* [Conventional commits](https://www.conventionalcommits.org/) - Standardized commit history management
-* [Observability](https://opentelemetry.io/) - Open Telemetry integration
-* [Absolute imports](https://nextjs.org/docs/advanced-features/module-path-aliases) - Simplified import structure
-* [Health checks](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) - Kubernetes-compatible monitoring
-* [Radix UI](https://www.radix-ui.com/) - Headless components for customization
-* [CVA](http://cva.style/) (Class Variance Authority) - Consistent design system creation
-* [Renovate BOT](https://www.whitesourcesoftware.com/free-developer-tools/renovate) - Automated dependency and security updates
-* [Patch-package](https://www.npmjs.com/package/patch-package) - External dependency fixes without compromises
-* Component relationship tools - Graph for managing coupling and cohesion
-* [Semantic Release](https://github.com/semantic-release/semantic-release) - Automated changelog generation
-* [T3 Env](https://env.t3.gg/) - Streamlined environment variable management
+4. **Heritage Suite** - 2 guests, LKR 18,000
+   - Images: bedroom4_1.jpg, bedroom4_2.jpg
 
-### Infrastructure & deployments
+## 🔧 API Endpoints
 
-#### Vercel
+### Rooms
+- `GET /api/rooms` - Get all active rooms
+- `GET /api/rooms/{slug}` - Get specific room by slug
 
-Easily deploy your Next.js app with [Vercel](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=github&utm_campaign=next-enterprise) by clicking the button below:
+### Bookings
+- `POST /api/bookings` - Create new booking
 
-[![Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/Blazity/next-enterprise)
+### Contact
+- `POST /api/contact` - Send contact message
 
-#### Custom cloud infrastructure
+### Health Check
+- `GET /api/health` - API health status
 
-**next-enterprise** offers dedicated infrastructure as code (IaC) solutions built with Terraform, designed specifically for deploying Next.js applications based on our extensive experience working with enterprise clients.
+## 🎨 Frontend Structure
 
-Learn more in our [documentation (docs.blazity.com)][docs] how to quickstart with the deployments using simple CLI.
+### Key Components
+- **Rooms.tsx** - Room listing page with API integration
+- **RoomDetail.tsx** - Individual room details with image lightbox
+- **BookingForm.tsx** - Contact/booking form component
+- **Header.tsx** - Navigation header with mobile menu
+- **Footer.tsx** - Site footer
 
-#### Available cloud providers and theirs features:
+### Frontend Features
+- **Image Lightbox**: Full-screen image viewing with navigation controls
+- **Keyboard Support**: Arrow key navigation and ESC to close
+- **Click Outside to Close**: Intuitive lightbox closing
+- **Responsive Design**: Mobile-first approach with Tailwind CSS
+- **Dynamic Image Paths**: Handles different API image formats
+- **Error Handling**: Loading states and error messages
+- **Booking Integration**: Contact form with API submission
 
-* **AWS (Amazon Web Services)**
-  * Automated provisioning of AWS infrastructure
-  * Scalable & secure setup using:
-     * VPC - Isolated network infrastructure
-     * Elastic Container Service (ECS) - Container orchestration
-     * Elastic Container Registry (ECR) - Container image storage
-     * Application Load Balancer - Traffic distribution
-     * S3 + CloudFront - Static asset delivery and caching
-     * AWS WAF - Web Application Firewall protection
-     * Redis Cluster - Caching
-  * CI/CD ready - Continuous integration and deployment pipeline
+### Data Flow
+1. Frontend fetches room data from Next.js Enterprise API
+2. Data is served from PostgreSQL database via Prisma
+3. Components render with real-time data
+4. Room details use slug-based routing
 
-*... more coming soon*
+### Routing
+- `/` - Homepage
+- `/rooms` - Room listing
+- `/rooms/{slug}` - Room details (e.g., `/rooms/deluxe-family-room`)
+- `/about` - About page
+- `/contact` - Contact page
 
-### Team & maintenance
+## 🛠️ Technology Stack
 
-**next-enterprise** is backed and maintained by [Blazity](https://blazity.com), providing up to date security features and integrated feature updates.
+### Frontend
+- **Framework**: React 18 with Vite
+- **Styling**: Tailwind CSS
+- **Routing**: React Router DOM
+- **Forms**: React Hook Form with Yup validation
+- **HTTP Client**: Axios
+- **Icons**: Lucide React
 
-#### Active maintainers
+### Backend
+- **Framework**: Next.js 15 with App Router
+- **Database**: PostgreSQL 16 with Prisma ORM
+- **Validation**: Zod schemas
+- **Type Safety**: TypeScript with strict configuration
 
-- Igor Klepacki ([neg4n](https://github.com/neg4n)) - Open Source Software Developer
-- Tomasz Czechowski ([tomaszczechowski](https://github.com/tomaszczechowski)) - Solutions Architect & DevOps
-- Jakub Jabłoński ([jjablonski-it](https://github.com/jjablonski-it)) - Head of Integrations
+### Development Tools
+- **Package Manager**: npm
+- **Linting**: ESLint 9
+- **Type Checking**: TypeScript
+- **Containerization**: Docker & Docker Compose
 
-#### All-time contributors
-[bmstefanski](https://github.com/bmstefanski)
+## 🔧 Technical Specifications
 
-## License
+### Current Versions
+- **React**: 18.3.1
+- **Next.js**: 15.3.3
+- **TypeScript**: 5.5.3
+- **Tailwind CSS**: 3.4.1
+- **Prisma**: 6.17.1
+- **PostgreSQL**: 16
+- **Node.js**: 20+
 
-MIT
+### Next.js Enterprise Features
+- **Performance**: Optimized bundle size and runtime performance
+- **Type Safety**: Full TypeScript support with excellent IntelliSense
+- **Scalability**: Enterprise-grade architecture and patterns
+- **Developer Experience**: Excellent tooling and development workflow
 
+## 🐳 Docker Services
 
-[docs]: https://docs.blazity.com/next-enterprise/deployments/enterprise-cli
+### Services Overview
+- **postgres**: PostgreSQL 16 database
+- **backend**: Next.js Enterprise API server
+- **frontend**: React development server
+
+### Environment Variables
+```yaml
+# Database
+POSTGRES_DB=dutchwallfort
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+
+# Backend
+DATABASE_URL=postgresql://postgres:postgres@postgres:5432/dutchwallfort
+NODE_ENV=development
+
+# Frontend
+VITE_API_URL=http://localhost:3000
+```
+
+## 🚀 Development
+
+### Local Development
+```bash
+# Install frontend dependencies
+npm install
+
+# Install backend dependencies
+cd backend && npm install
+
+# Start database
+docker-compose up postgres -d
+
+# Start backend (in backend directory)
+npm run dev
+
+# Start frontend (in main directory)
+npm run dev
+```
+
+### Database Commands (Backend)
+```bash
+cd backend
+
+# Generate Prisma client
+npm run db:generate
+
+# Push schema changes
+npm run db:push
+
+# Create migration
+npm run db:migrate
+
+# Open Prisma Studio
+npm run db:studio
+```
+
+## 🎯 Features
+
+### Frontend Features
+- ✅ Room listing with API data
+- ✅ Room detail pages with slug routing
+- ✅ Image lightbox with navigation
+- ✅ Booking form integration
+- ✅ Responsive design
+- ✅ Dynamic image handling
+- ✅ Amenity icons
+- ✅ Price formatting
+- ✅ Loading states and error handling
+- ✅ Click outside to close functionality
+
+### Backend Features
+- ✅ Next.js Enterprise API routes
+- ✅ PostgreSQL database with Prisma
+- ✅ Room data management
+- ✅ Booking system
+- ✅ Contact form handling
+- ✅ Data validation with Zod
+- ✅ Type-safe database operations
+- ✅ Health check endpoint
+
+### Enterprise Features
+- ✅ Next.js Enterprise boilerplate backend
+- ✅ Prisma ORM for database management
+- ✅ Comprehensive API structure
+- ✅ Type-safe operations
+- ✅ Scalable architecture
+- ✅ Docker containerization
+
+## 🔮 Future Enhancements
+
+### Planned Features
+- [ ] User authentication system
+- [ ] Online booking system with payment integration
+- [ ] Email notifications
+- [ ] Multi-language support
+- [ ] Advanced search and filtering
+- [ ] Calendar integration
+- [ ] Review system
+- [ ] Admin dashboard
+
+### Technical Improvements
+- [ ] Database indexing optimization
+- [ ] Caching layer implementation
+- [ ] Image CDN integration
+- [ ] Analytics integration
+- [ ] Performance monitoring
+- [ ] Error tracking
+
+## 📞 Support
+
+### Contact Information
+- **Phone**: +94 76 572 1495
+- **WhatsApp**: +94 76 572 1495
+- **Email**: admin@dutchwallfort.com
+
+### Technical Support
+- Check Docker logs: `docker-compose logs`
+- Verify all services are running: `docker-compose ps`
+- Test API endpoints independently
+- Check browser console for frontend errors
+
+---
+
+## 📝 Changelog
+
+### Version 3.0.0 (Current - Next.js Enterprise Backend)
+- ✅ Complete migration to Next.js Enterprise backend
+- ✅ Preserved original React frontend
+- ✅ PostgreSQL database with Prisma ORM
+- ✅ Next.js App Router with API routes
+- ✅ TypeScript with strict configuration
+- ✅ Docker containerization for both services
+- ✅ Maintained all original frontend functionality
+- ✅ Enhanced with modern backend architecture
+
+### Migration from Previous Versions
+- ✅ Removed old Express.js API backend
+- ✅ Removed Refine admin dashboard
+- ✅ Integrated Next.js Enterprise boilerplate as backend-only
+- ✅ Preserved database schema and data
+- ✅ Maintained all original frontend functionality
+- ✅ Enhanced with modern development practices
+
+---
+
+**Built with ❤️ for Dutch Wall Fort**
+
+**Current Version**: 3.0.0 (Next.js Enterprise Backend)  
+**Last Updated**: December 2024

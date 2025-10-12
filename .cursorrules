@@ -1,0 +1,85 @@
+# Cursor AI Rules for Dutch Wall Fort
+
+## Project Context
+This is a property management system for Dutch Wall Fort, a boutique villa in Galle Fort, Sri Lanka.
+
+## Tech Stack
+- Frontend: React 18 + TypeScript + Vite
+- Styling: Tailwind CSS
+- Backend: Supabase (PostgreSQL + Auth)
+- Database: PostgreSQL 16
+- Deployment: Docker + Docker Compose
+
+## Code Style Guidelines
+
+### Linting & IDE Configuration
+- ESLint warnings are set to minimal to reduce noise
+- Focus on critical errors rather than style warnings
+- TypeScript 'any' types are allowed for API flexibility
+- React refresh warnings are disabled for development
+
+### TypeScript
+- Use TypeScript for all new files
+- Define interfaces for all data types
+- Use proper type annotations
+- 'any' types are permitted for API responses
+
+### React
+- Use functional components with hooks
+- Keep components small and focused
+- Use proper prop types
+- Extract reusable logic into custom hooks
+
+### Database
+- Always enable Row Level Security on new tables
+- Write secure policies that check authentication
+- Use proper foreign key constraints
+- Include timestamps (created_at, updated_at)
+
+### Security
+- Never commit secrets or API keys
+- Always validate user input
+- Use Supabase Auth for authentication
+- Follow principle of least privilege for RLS policies
+
+## File Organization
+- Components in `/src/components`
+- Admin components in `/src/components/admin`
+- Pages in `/src/pages`
+- Admin pages in `/src/pages/admin`
+- Utilities in `/src/lib`
+- Migrations in `/supabase/migrations`
+
+## Database Migrations
+When creating migrations:
+1. Include detailed comments explaining the changes
+2. Use IF NOT EXISTS for safety
+3. Enable RLS on all new tables
+4. Create restrictive policies by default
+5. Test policies before deploying
+
+## Naming Conventions
+- Components: PascalCase (e.g., AdminDashboard.tsx)
+- Files: kebab-case for utilities (e.g., supabase-client.ts)
+- Database tables: snake_case (e.g., blog_posts)
+- CSS classes: Tailwind utilities
+
+## Best Practices
+- Write clear, descriptive commit messages
+- Test locally before committing
+- Run 'npm run build' to check for errors
+- Keep dependencies up to date
+- Document complex logic
+- Use meaningful variable names
+
+## Docker Commands Reference
+- Start: docker-compose up -d
+- Stop: docker-compose down
+- Logs: docker-compose logs -f
+- Rebuild: docker-compose up -d --build
+- Clean: docker-compose down -v
+
+## Common Tasks
+- Add new table: Create migration, apply it, update TypeScript types
+- Add admin page: Create page component, add route in App.tsx
+- Update schema: Create new migration file
