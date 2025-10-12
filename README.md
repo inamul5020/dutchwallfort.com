@@ -7,11 +7,19 @@ A modern hotel booking website with React frontend and Next.js Enterprise API ba
 ```
 dutchwallfort.com/
 ├── src/                    # React Frontend (Vite + TypeScript)
+│   ├── pages/             # Frontend pages (Home, Rooms, Contact, etc.)
+│   ├── components/        # Reusable UI components
+│   ├── pages/admin/       # Admin dashboard pages
+│   └── contexts/          # React contexts (Auth, etc.)
 ├── backend/                # Next.js Enterprise API Backend
-│   ├── app/api/           # API Routes (Rooms, Bookings, Contact)
-│   └── prisma/            # Database schema and migrations
+│   ├── app/api/           # API Routes (Rooms, Bookings, Contact, Auth)
+│   ├── prisma/            # Database schema and migrations
+│   └── package.json       # Backend dependencies
 ├── database/              # Database initialization scripts
+│   ├── init/01-schema.sql # Database schema
+│   └── init/02-seed.sql   # Seed data
 ├── docker-compose.yml     # Docker orchestration
+├── Dockerfile.frontend    # Frontend container
 └── README.md             # This documentation
 ```
 
@@ -31,7 +39,76 @@ docker-compose up -d
 ### 2. Access Applications
 - **Frontend**: http://localhost:5173
 - **Backend API**: http://localhost:3000
+- **Admin Dashboard**: http://localhost:5173/admin/login
 - **Database**: localhost:5432
+
+### 3. Admin Access
+- **Email**: admin@dutchwallfort.com
+- **Password**: admin123
+
+## ✨ Features
+
+### Frontend Features
+- 🏠 **Room Showcase** - Beautiful room gallery with detailed descriptions
+- 📅 **Booking System** - Online booking form with date selection
+- 📝 **Blog System** - Content management for travel guides and updates
+- ⭐ **Reviews System** - Guest reviews and ratings
+- 📧 **Contact Forms** - Multiple contact options for inquiries
+- 🎨 **Responsive Design** - Mobile-first design with Tailwind CSS
+- 🔍 **SEO Optimized** - Meta tags and structured data
+
+### Admin Dashboard
+- 🔐 **Secure Authentication** - JWT-based login system
+- 🏠 **Room Management** - Add, edit, delete rooms with images
+- 📅 **Booking Management** - View and manage guest bookings
+- 📝 **Blog Management** - Create and publish blog posts
+- 🎯 **Services Management** - Manage tours and services
+- 📧 **Message Management** - Handle contact form submissions
+- 📊 **Dashboard Overview** - Statistics and quick actions
+
+### Backend Features
+- 🚀 **Next.js Enterprise** - Production-ready API framework
+- 🗄️ **PostgreSQL Database** - Robust data storage with Prisma ORM
+- 🔒 **Authentication** - Secure JWT token-based auth
+- 🐳 **Docker Support** - Containerized development and deployment
+- 📡 **RESTful APIs** - Complete CRUD operations for all entities
+- 🔄 **CORS Support** - Cross-origin resource sharing configured
+- 📝 **Type Safety** - Full TypeScript implementation
+
+## 🔌 API Endpoints
+
+### Authentication
+- `POST /api/auth/login` - User login with JWT token
+
+### Rooms Management
+- `GET /api/rooms` - List all active rooms
+- `GET /api/rooms/[slug]` - Get specific room by slug
+- `POST /api/rooms` - Create new room (Admin)
+- `PUT /api/rooms/[slug]` - Update room (Admin)
+- `DELETE /api/rooms/[slug]` - Delete room (Admin)
+
+### Services Management
+- `GET /api/services` - List all active services
+- `POST /api/services` - Create new service (Admin)
+
+### Bookings Management
+- `GET /api/bookings` - List all bookings (Admin)
+- `POST /api/bookings` - Create new booking
+
+### Blog Management
+- `GET /api/blog` - List all blog posts
+- `POST /api/blog` - Create new blog post (Admin)
+
+### Reviews Management
+- `GET /api/reviews` - List approved reviews
+- `POST /api/reviews` - Create new review
+
+### Contact Management
+- `GET /api/contact` - List all messages (Admin)
+- `POST /api/contact` - Create new message
+
+### Health Check
+- `GET /api/health` - API health status
 
 ## 📊 Database Schema
 
@@ -136,6 +213,63 @@ The database is populated with 4 rooms:
 - **Linting**: ESLint 9
 - **Type Checking**: TypeScript
 - **Containerization**: Docker & Docker Compose
+
+## 🛠️ Development
+
+### Docker Development (Recommended)
+```bash
+# Start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
+### Manual Development Setup
+
+#### Frontend Development
+```bash
+cd dutchwallfort.com
+npm install
+npm run dev
+# Frontend runs on http://localhost:5173
+```
+
+#### Backend Development
+```bash
+cd dutchwallfort.com/backend
+npm install
+npx prisma generate
+npm run dev
+# Backend runs on http://localhost:3000
+```
+
+#### Database Setup
+```bash
+# Start PostgreSQL
+docker run --name postgres-dwf -e POSTGRES_DB=dutchwallfort -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:16
+
+# Run migrations (if needed)
+cd backend
+npx prisma migrate dev
+npx prisma db seed
+```
+
+### Environment Variables
+Create `.env` file in the root directory:
+```env
+# Database
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/dutchwallfort
+
+# JWT Secret (for production)
+JWT_SECRET=your-secret-key-change-in-production
+
+# Frontend API URL
+VITE_API_URL=http://localhost:3000
+```
 
 ## 🔧 Technical Specifications
 

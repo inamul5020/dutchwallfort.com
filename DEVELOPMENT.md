@@ -19,9 +19,13 @@ docker-compose up -d
 
 ### 3. Access Applications
 - **Frontend**: http://localhost:5173
-- **Admin Dashboard**: http://localhost:3001
-- **API**: http://localhost:3000
+- **Backend API**: http://localhost:3000
+- **Admin Dashboard**: http://localhost:5173/admin/login
 - **Database**: localhost:5432
+
+### 4. Admin Access
+- **Email**: admin@dutchwallfort.com
+- **Password**: admin123
 
 ## 🏗️ Architecture Overview
 
