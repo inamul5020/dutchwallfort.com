@@ -29,7 +29,7 @@ const RoomDetail = () => {
     const fetchRoom = async () => {
       try {
         const response = await roomsAPI.getBySlug(slug!);
-        setRoom(response.data);
+        setRoom(response.data.data);
       } catch (error) {
         console.error('Error fetching room:', error);
         setError('Room not found');

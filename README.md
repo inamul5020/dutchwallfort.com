@@ -234,6 +234,13 @@ The database is populated with 4 rooms:
 
 ## 🆕 Recent Updates & Fixes
 
+### v3.2.0 - Room Details Page & Complete Data Integration
+- ✅ **Fixed Room Details Page**: Resolved "Room Not Found" issue on room detail pages
+- ✅ **Complete Data Integration**: All room data (descriptions, amenities, gallery) now loads from database
+- ✅ **API Response Handling**: Fixed frontend to correctly parse API response structure
+- ✅ **CORS for Room Details**: Added CORS headers to room by slug API endpoint
+- ✅ **Data Verification**: Confirmed all hardcoded room data is properly saved to database
+
 ### v3.1.0 - Admin Dashboard & API Improvements
 - ✅ **Fixed Room Editing**: Resolved "Failed to load room data" issue
 - ✅ **Admin Data Sync**: All admin pages now display data correctly
