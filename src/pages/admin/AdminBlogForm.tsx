@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { blogAPI } from '../../lib/api';
 import { ArrowLeft, Save } from 'lucide-react';
+import RichTextEditor from '../../components/RichTextEditor';
 
 interface BlogFormData {
   slug: string;
@@ -197,16 +198,16 @@ const AdminBlogForm = () => {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Content
           </label>
-          <textarea
-            name="content"
-            required
-            rows={15}
+          <RichTextEditor
             value={formData.content}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500 font-mono text-sm"
-            placeholder="Write your blog post content here. You can use markdown formatting."
+            onChange={(content) => setFormData({ ...formData, content })}
+            height={500}
+            placeholder="Write your blog post content here. Use the toolbar above to format text, add images, links, and more."
           />
-          <p className="mt-1 text-xs text-gray-500">Supports plain text and basic markdown</p>
+          <p className="mt-2 text-xs text-gray-500">
+            💡 Use the toolbar above to format text, add images, create lists, insert links, and more. 
+            Images will be automatically uploaded to the server.
+          </p>
         </div>
 
         <div className="border-t pt-6">

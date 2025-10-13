@@ -67,7 +67,7 @@ docker-compose up -d
 ### Frontend Features
 - 🏠 **Room Showcase** - Beautiful room gallery with detailed descriptions
 - 📅 **Booking System** - Online booking form with date selection
-- 📝 **Blog System** - Content management for travel guides and updates
+- 📝 **Blog System** - Rich text editor with categories and filtering ✅
 - ⭐ **Reviews System** - Guest reviews and ratings
 - 📧 **Contact Forms** - Multiple contact options for inquiries
 - 🎨 **Responsive Design** - Mobile-first design with Tailwind CSS
@@ -77,7 +77,7 @@ docker-compose up -d
 - 🔐 **Secure Authentication** - JWT-based login system ✅
 - 🏠 **Room Management** - Add, edit, delete rooms with images ✅
 - 📅 **Booking Management** - View and manage guest bookings ✅
-- 📝 **Blog Management** - Create and publish blog posts ✅
+- 📝 **Blog Management** - Rich text editor with categories and filtering ✅
 - 🎯 **Services Management** - Manage tours and services ✅
 - 📧 **Message Management** - Handle contact form submissions ✅
 - 📊 **Dashboard Overview** - Statistics and quick actions ✅
@@ -115,6 +115,9 @@ docker-compose up -d
 
 ### Blog Management
 - `GET /api/blog` - List all blog posts
+- `GET /api/blog?status=published` - List published posts only
+- `GET /api/blog?category=travel-guides` - Filter posts by category
+- `GET /api/blog/slug/[slug]` - Get blog post by slug
 - `POST /api/blog` - Create new blog post (Admin)
 
 ### Reviews Management
@@ -126,6 +129,15 @@ docker-compose up -d
 - `GET /api/testimonials?featured=true` - List featured testimonials
 - `GET /api/testimonials?approved=true` - List approved testimonials
 - `POST /api/testimonials` - Create new testimonial
+
+### Blog Categories Management
+- `GET /api/blog/categories` - List all blog categories
+- `GET /api/blog/categories?active=true` - List active categories only
+- `GET /api/blog/categories/[id]` - Get category by ID
+- `GET /api/blog/categories/slug/[slug]` - Get category by slug
+- `POST /api/blog/categories` - Create new category (Admin)
+- `PUT /api/blog/categories/[id]` - Update category (Admin)
+- `DELETE /api/blog/categories/[id]` - Delete category (Admin)
 
 ### File Upload
 - `POST /api/upload` - Upload images (supports JPEG, PNG, WebP up to 5MB)
@@ -242,6 +254,15 @@ The database is populated with 4 rooms:
 - **Containerization**: Docker & Docker Compose
 
 ## 🆕 Recent Updates & Fixes
+
+### v3.4.0 - Blog Categories & Content Management System
+- ✅ **Rich Text Editor**: Implemented TinyMCE WYSIWYG editor for blog posts
+- ✅ **Blog Categories**: Added complete category system with color coding and filtering
+- ✅ **Category Management**: Full CRUD operations for blog categories in admin
+- ✅ **Enhanced Blog UI**: Category badges, filtering dropdown, and improved layout
+- ✅ **Image Upload Integration**: Direct image upload from rich text editor
+- ✅ **SEO-Friendly URLs**: Clean category and post URLs for better search indexing
+- ✅ **Sample Content**: Added 6 categories and 4 sample blog posts about Galle Fort
 
 ### v3.3.0 - Advanced Features & Enhanced User Experience
 - ✅ **Enhanced Booking Form**: Added date validation, room capacity checking, and price estimation

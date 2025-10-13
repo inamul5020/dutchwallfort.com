@@ -14,6 +14,8 @@ import LocalArea from './pages/LocalArea';
 import Reviews from './pages/Reviews';
 import Contact from './pages/Contact';
 import Policies from './pages/Policies';
+import Blog from './pages/Blog';
+import BlogDetail from './pages/BlogDetail';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminRooms from './pages/admin/AdminRooms';
@@ -107,6 +109,24 @@ function App() {
               <Header />
               <main className="flex-grow">
                 <Policies />
+              </main>
+              <Footer />
+            </div>
+          } />
+          <Route path="/blog" element={
+            <div className="min-h-screen bg-white flex flex-col">
+              <Header />
+              <main className="flex-grow">
+                <Blog />
+              </main>
+              <Footer />
+            </div>
+          } />
+          <Route path="/blog/:slug" element={
+            <div className="min-h-screen bg-white flex flex-col">
+              <Header />
+              <main className="flex-grow">
+                <BlogDetail />
               </main>
               <Footer />
             </div>

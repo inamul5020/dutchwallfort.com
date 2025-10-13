@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { sendBookingConfirmation, sendBookingNotificationToAdmin } from "../../lib/mailjet";
 
 const prisma = new PrismaClient();
 
@@ -81,12 +82,53 @@ export async function POST(request: NextRequest) {
         roomId: body.roomId,
         guests: body.guests,
         message: body.message || '',
-        status: body.status || 'pending',
+        status: 'pending', // Always start as pending
       },
       include: {
         room: true
       }
     });
+
+    // Calculate total nights and estimated price
+    const checkInDate = new Date(body.checkIn);
+    const checkOutDate = new Date(body.checkOut);
+    const totalNights = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
+    const roomPrice = booking.room ? parseFloat(booking.room.price.toString()) : 0;
+    const estimatedPrice = roomPrice * totalNights;
+
+    // Send email notifications
+    try {
+      // Send confirmation email to guest (pending status)
+      await sendBookingConfirmation({
+        guestName: booking.guestName,
+        guestEmail: booking.guestEmail,
+        checkIn: body.checkIn,
+        checkOut: body.checkOut,
+        roomName: booking.room?.name || 'Any Room',
+        guests: booking.guests,
+        totalNights: totalNights,
+        estimatedPrice: estimatedPrice,
+        message: booking.message,
+        status: 'pending',
+      });
+
+      // Send notification email to admin
+      await sendBookingNotificationToAdmin({
+        guestName: booking.guestName,
+        guestEmail: booking.guestEmail,
+        guestPhone: booking.guestPhone,
+        checkIn: body.checkIn,
+        checkOut: body.checkOut,
+        roomName: booking.room?.name || 'Any Room',
+        guests: booking.guests,
+        message: booking.message,
+      });
+
+      console.log('Email notifications sent successfully');
+    } catch (emailError) {
+      console.error('Error sending email notifications:', emailError);
+      // Don't fail the booking if email fails
+    }
     
     return NextResponse.json({
       success: true,

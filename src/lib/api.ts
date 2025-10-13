@@ -65,15 +65,26 @@ export const bookingsAPI = {
   create: (data: any) => api.post('/bookings', data),
   updateStatus: (id: number, status: string) =>
     api.patch(`/bookings/${id}/status`, { status }),
+  confirm: (id: number) => api.put(`/bookings/${id}/confirm`),
   delete: (id: number) => api.delete(`/bookings/${id}`),
 };
 
 export const blogAPI = {
-  getAll: (status?: string) => api.get('/blog', { params: { status } }),
+  getAll: (status?: string, category?: string) => api.get('/blog', { params: { status, category } }),
   getById: (id: number) => api.get(`/blog/${id}`),
+  getBySlug: (slug: string) => api.get(`/blog/slug/${slug}`),
   create: (data: any) => api.post('/blog', data),
   update: (id: number, data: any) => api.put(`/blog/${id}`, data),
   delete: (id: number) => api.delete(`/blog/${id}`),
+};
+
+export const blogCategoriesAPI = {
+  getAll: (active?: boolean) => api.get('/blog/categories', { params: { active } }),
+  getById: (id: number) => api.get(`/blog/categories/${id}`),
+  getBySlug: (slug: string) => api.get(`/blog/categories/slug/${slug}`),
+  create: (data: any) => api.post('/blog/categories', data),
+  update: (id: number, data: any) => api.put(`/blog/categories/${id}`, data),
+  delete: (id: number) => api.delete(`/blog/categories/${id}`),
 };
 
 export const testimonialsAPI = {

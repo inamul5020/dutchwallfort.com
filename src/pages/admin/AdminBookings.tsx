@@ -47,13 +47,24 @@ const AdminBookings = () => {
     }
   };
 
+  const confirmBooking = async (id: string) => {
+    try {
+      await bookingsAPI.confirm(parseInt(id));
+      fetchBookings();
+      alert('Booking confirmed! Confirmation email sent to guest.');
+    } catch (error) {
+      console.error('Error confirming booking:', error);
+      alert('Error confirming booking. Please try again.');
+    }
+  };
+
   const filteredBookings = statusFilter === 'all' 
     ? bookings 
     : bookings.filter(booking => booking.status === statusFilter);
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'new':
+      case 'pending':
         return 'bg-yellow-100 text-yellow-800';
       case 'confirmed':
         return 'bg-green-100 text-green-800';
@@ -95,7 +106,7 @@ const AdminBookings = () => {
           <div className="flex space-x-2">
             {[
               { key: 'all', label: 'All Bookings' },
-              { key: 'new', label: 'New' },
+              { key: 'pending', label: 'Pending' },
               { key: 'confirmed', label: 'Confirmed' },
               { key: 'cancelled', label: 'Cancelled' }
             ].map((filter) => (
@@ -132,12 +143,20 @@ const AdminBookings = () => {
               </div>
               
               <div className="flex items-center space-x-3">
+                {booking.status === 'pending' && (
+                  <button
+                    onClick={() => confirmBooking(booking.id)}
+                    className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
+                  >
+                    Confirm Booking
+                  </button>
+                )}
                 <select
                   value={booking.status}
                   onChange={(e) => updateBookingStatus(booking.id, e.target.value)}
                   className={`px-3 py-1 rounded-full text-xs font-medium border-0 ${getStatusColor(booking.status)}`}
                 >
-                  <option value="new">New</option>
+                  <option value="pending">Pending</option>
                   <option value="confirmed">Confirmed</option>
                   <option value="cancelled">Cancelled</option>
                 </select>

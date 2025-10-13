@@ -18,31 +18,45 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
+    const category = searchParams.get('category');
     
-    const where = status ? { status } : {};
+    const where: any = {};
+    if (status) {
+      where.isPublished = status === 'published';
+    }
+    if (category) {
+      where.category = {
+        slug: category
+      };
+    }
     
     const posts = await prisma.blogPost.findMany({
       where,
       include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            email: true
-          }
-        }
+        category: true
       },
       orderBy: { createdAt: 'desc' }
     });
     
     // Map database fields to frontend expected fields
     const mappedPosts = posts.map(post => ({
-      ...post,
-      is_published: post.status === 'published',
-      published_at: post.status === 'published' ? post.publishedAt : null,
-      created_at: post.createdAt,
-      updated_at: post.updatedAt,
-      author: post.author?.name || 'Unknown Author'
+      id: post.id,
+      slug: post.slug,
+      title: post.title,
+      excerpt: post.excerpt,
+      content: post.content,
+      featured_image: post.featuredImage,
+      author: post.author,
+      is_published: post.isPublished,
+      published_at: post.publishedAt?.toISOString(),
+      created_at: post.createdAt.toISOString(),
+      updated_at: post.updatedAt.toISOString(),
+      category: post.category ? {
+        id: post.category.id,
+        slug: post.category.slug,
+        name: post.category.name,
+        color: post.category.color,
+      } : null,
     }));
 
     return NextResponse.json({
@@ -82,25 +96,38 @@ export async function POST(request: NextRequest) {
         title: body.title,
         excerpt: body.excerpt,
         content: body.content,
-        featuredImage: body.featuredImage,
-        authorId: body.authorId,
-        status: body.status || 'draft',
-        publishedAt: body.status === 'published' ? new Date() : null,
+        featuredImage: body.featured_image,
+        author: body.author || 'Dutch Wall Fort Team',
+        isPublished: body.is_published || false,
+        publishedAt: body.is_published ? new Date() : null,
+        categoryId: body.category_id || null,
       },
       include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            email: true
-          }
-        }
+        category: true
       }
     });
     
     return NextResponse.json({
       success: true,
-      data: post
+      data: {
+        id: post.id,
+        slug: post.slug,
+        title: post.title,
+        excerpt: post.excerpt,
+        content: post.content,
+        featured_image: post.featuredImage,
+        author: post.author,
+        is_published: post.isPublished,
+        published_at: post.publishedAt?.toISOString(),
+        created_at: post.createdAt.toISOString(),
+        updated_at: post.updatedAt.toISOString(),
+        category: post.category ? {
+          id: post.category.id,
+          slug: post.category.slug,
+          name: post.category.name,
+          color: post.category.color,
+        } : null,
+      }
     }, {
       headers: {
         'Access-Control-Allow-Origin': '*',
