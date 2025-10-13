@@ -28,14 +28,15 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     formData.append('file', blobInfo.blob(), blobInfo.filename());
 
     // Upload to our backend
-    fetch('/api/upload', {
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    fetch(`${apiUrl}/api/upload`, {
       method: 'POST',
       body: formData,
     })
     .then(response => response.json())
     .then(result => {
       if (result.success) {
-        success(result.url);
+        success(result.data.url);
       } else {
         failure('Image upload failed');
       }
@@ -57,22 +58,19 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         disabled={disabled}
         init={{
           height: height,
-          menubar: true,
+          menubar: false,
           plugins: [
             'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
             'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-            'insertdatetime', 'media', 'table', 'help', 'wordcount', 'save',
-            'emoticons', 'template', 'codesample', 'hr', 'pagebreak', 'nonbreaking',
-            'toc', 'imagetools', 'textpattern', 'noneditable', 'quickbars', 'accordion'
+            'insertdatetime', 'media', 'table', 'help', 'wordcount'
           ],
           toolbar: 'undo redo | blocks | ' +
             'bold italic backcolor | alignleft aligncenter ' +
             'alignright alignjustify | bullist numlist outdent indent | ' +
             'removeformat | help | image | link | code | table | ' +
-            'charmap | emoticons | insertdatetime | media | ' +
+            'charmap | insertdatetime | media | ' +
             'searchreplace | visualblocks | fullscreen | preview | ' +
-            'save | print | pagebreak | nonbreaking | toc | ' +
-            'accordion | codesample | hr | wordcount',
+            'wordcount',
           content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px; }',
           placeholder: placeholder,
           branding: false,
@@ -80,9 +78,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           resize: true,
           statusbar: true,
           elementpath: true,
-          contextmenu: 'link image imagetools table',
-          quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
-          quickbars_insert_toolbar: 'quickimage quicktable',
+          contextmenu: 'link image table',
           file_picker_types: 'image',
           file_picker_callback: (callback, value, meta) => {
             if (meta.filetype === 'image') {
@@ -96,14 +92,15 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
                   const formData = new FormData();
                   formData.append('file', file);
                   
-                  fetch('/api/upload', {
+                  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+                  fetch(`${apiUrl}/api/upload`, {
                     method: 'POST',
                     body: formData,
                   })
                   .then(response => response.json())
                   .then(result => {
                     if (result.success) {
-                      callback(result.url, { title: file.name });
+                      callback(result.data.url, { title: file.name });
                     }
                   })
                   .catch(error => {
@@ -120,9 +117,6 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           relative_urls: false,
           remove_script_host: false,
           document_base_url: window.location.origin,
-          content_css: [
-            'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'
-          ],
           setup: (editor) => {
             editor.on('init', () => {
               editor.getContainer().style.border = '1px solid #d1d5db';
