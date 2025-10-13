@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Users, Bed, Wind, Bath, Calendar, ArrowRight, X } from 'lucide-react';
 import BookingForm from '../components/BookingForm';
+import VirtualTours from '../components/VirtualTours';
 import { roomsAPI } from '../lib/api';
 
 interface Room {
@@ -199,6 +200,18 @@ const RoomDetail = () => {
                   </div>
                 ))}
               </div>
+            </div>
+
+            {/* Virtual Tours */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Virtual Tour</h2>
+              <VirtualTours 
+                roomId={room.id}
+                tourType="360"
+                limit={1}
+                showRoomInfo={false}
+                className="mb-4"
+              />
             </div>
 
             {/* Nearby Attractions */}

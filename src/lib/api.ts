@@ -117,4 +117,21 @@ export const galleryAPI = {
   delete: (id: number) => api.delete(`/gallery/${id}`),
 };
 
+export const virtualToursAPI = {
+  getAll: (roomId?: number, tourType?: string, featured?: boolean, active?: boolean, limit?: number) => 
+    api.get('/virtual-tours', { 
+      params: { 
+        ...(roomId && { roomId }), 
+        ...(tourType && { tourType }), 
+        ...(featured !== undefined && { featured }), 
+        ...(active !== undefined && { active }),
+        ...(limit && { limit })
+      } 
+    }),
+  getById: (id: number) => api.get(`/virtual-tours/${id}`),
+  create: (data: any) => api.post('/virtual-tours', data),
+  update: (id: number, data: any) => api.put(`/virtual-tours/${id}`, data),
+  delete: (id: number) => api.delete(`/virtual-tours/${id}`),
+};
+
 export default api;

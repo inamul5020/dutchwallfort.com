@@ -8,6 +8,7 @@ import {
   MapPin, 
   Calendar, 
   Images,
+  Video,
   LogOut,
   Menu,
   X
@@ -25,6 +26,7 @@ const AdminLayout = () => {
     { name: 'Services', href: '/admin/services', icon: MapPin },
     { name: 'Bookings', href: '/admin/bookings', icon: Calendar },
     { name: 'Gallery', href: '/admin/gallery', icon: Images },
+    { name: 'Virtual Tours', href: '/admin/virtual-tours', icon: Video },
   ];
 
   const isActive = (href: string) => {
