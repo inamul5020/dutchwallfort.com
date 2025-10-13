@@ -45,6 +45,7 @@ export const authAPI = {
 export const roomsAPI = {
   getAll: () => api.get('/rooms'),
   getById: (id: number) => api.get(`/rooms/by-id/${id}`),
+  getBySlug: (slug: string) => api.get(`/rooms/${slug}`),
   create: (data: any) => api.post('/rooms', data),
   update: (id: number, data: any) => api.put(`/rooms/by-id/${id}`, data),
   delete: (id: number) => api.delete(`/rooms/by-id/${id}`),

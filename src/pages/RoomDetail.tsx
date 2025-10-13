@@ -1,178 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Users, Bed, Wind, Bath, Calendar, ArrowRight, X } from 'lucide-react';
 import BookingForm from '../components/BookingForm';
+import { roomsAPI } from '../lib/api';
+
+interface Room {
+  id: number;
+  slug: string;
+  name: string;
+  shortDescription: string;
+  longDescription: string;
+  capacity: number;
+  beds: string;
+  amenities: string[];
+  price: string;
+  images: string[];
+  isActive: boolean;
+}
 
 const RoomDetail = () => {
   const { slug } = useParams();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [room, setRoom] = useState<Room | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Room data - in a real app, this would come from an API
-  const rooms: { [key: string]: any } = {
-    "deluxe-family-room": {
-      id: "deluxe-family-room",
-      name: "Deluxe Family Room",
-      shortDescription: "Spacious family room with balcony and garden view",
-      longDescription: "Our most spacious accommodation offers the perfect blend of comfort and charm for families visiting Galle Fort. The room features a comfortable double bed and two single beds, ensuring everyone has a restful night's sleep. Step out onto your private balcony to enjoy garden views and the peaceful atmosphere of historic Church Street. The room maintains the villa's Dutch colonial character while providing all modern amenities including air conditioning, private bathroom with shower, and complimentary Wi-Fi. The space includes a convenient work desk for those who need to stay connected, and the private entrance ensures your privacy and comfort throughout your stay.",
-      capacity: 4,
-      beds: "1 double bed + 2 single beds",
-      amenities: [
-        "Air conditioning",
-        "Private bathroom (shower)",
-        "Complimentary breakfast",
-        "Free Wi-Fi",
-        "Private balcony",
-        "Garden view",
-        "Work desk",
-        "Private entrance",
-        "Daily housekeeping",
-        "Safe"
-      ],
-      priceFrom: "15,000",
-      gallery: [
-        "/images/bedroom1_1.jpg",
-        "/images/bedroom1_2.jpg",
-        "/images/bedroom1_3.jpg",
-        "/images/bedroom1_4.jpg",
-        "/images/bedroom1_5.jpg",
-        "/images/bedroom1_6.jpg"
-      ]
-    },
-    "superior-room": {
-      id: "superior-room",
-      name: "Superior Room",
-      shortDescription: "Comfortable room with private entrance and work area",
-      longDescription: "The Superior Room offers an ideal balance of space, comfort, and privacy for couples or small families. Featuring a double bed and single bed, this room is perfect for those seeking a bit more space during their stay in Galle Fort. The room includes a dedicated work desk area, making it suitable for business travelers or digital nomads. Your private entrance ensures complete independence, while the modern amenities including air conditioning, private bathroom, and mini fridge add to your comfort. The room showcases beautiful Dutch colonial architectural details while providing contemporary conveniences for a memorable stay.",
-      capacity: 3,
-      beds: "1 double bed + 1 single bed",
-      amenities: [
-        "Air conditioning",
-        "Private bathroom (shower)",
-        "Complimentary breakfast",
-        "Free Wi-Fi",
-        "Private entrance",
-        "Work desk",
-        "Mini fridge",
-        "Daily housekeeping",
-        "Safe",
-        "Reading lights"
-      ],
-      priceFrom: "12,000",
-      gallery: [
-        "/images/bedroom2_1.jpg",
-        "/images/bedroom2_2.jpg",
-        "/images/bedroom2_3.jpg",
-        "/images/bedroom2_4.jpg",
-        "/images/bedroom2_5.jpg"
-      ]
-    },
-    "standard-room": {
-      id: "standard-room",
-      name: "Standard Room",
-      shortDescription: "Cozy room with all essential amenities",
-      longDescription: "Our Standard Room may be cozy in size, but it's generous in comfort and style. Perfect for couples seeking an intimate and comfortable base for exploring Galle Fort. The room features a comfortable double bed with quality linens, ensuring a good night's rest after your adventures. Despite being our most compact option, the room includes all essential amenities including air conditioning, private bathroom, and complimentary breakfast. The space is thoughtfully designed to maximize comfort while maintaining the charm and character of our Dutch colonial villa. Daily housekeeping and a personal safe add to your peace of mind during your stay.",
-      capacity: 2,
-      beds: "1 double bed",
-      amenities: [
-        "Air conditioning",
-        "Private bathroom (shower)",
-        "Complimentary breakfast",
-        "Free Wi-Fi",
-        "Daily housekeeping",
-        "Safe",
-        "Reading lights",
-        "Wardrobe",
-        "Mirror",
-        "Electrical outlets"
-      ],
-      priceFrom: "9,000",
-      gallery: [
-        "/images/bedroom3_1.jpg",
-        "/images/bedroom3_2.jpg",
-        "/images/bedroom3_3.jpg",
-        "/images/bedroom3_4.jpg"
-      ]
-    },
-    "premium-room": {
-      id: "premium-room",
-      name: "Premium Room",
-      shortDescription: "Premium Room — 2-3 guests, spacious with modern amenities",
-      longDescription: "Our premium accommodation offers extra space and luxury amenities. Perfect for guests seeking additional comfort and style during their stay in Galle Fort. This spacious room features premium furnishings, a private balcony, and modern amenities that elevate your experience to the next level. Whether you're celebrating a special occasion or simply want to indulge in the best our villa has to offer, the Premium Room provides an exceptional blend of comfort, style, and convenience. Enjoy the enhanced amenities including a mini bar, premium bedding, and additional space for relaxation or work.",
-      capacity: 3,
-      beds: "1 double bed + 1 single bed",
-      amenities: [
-        "Air conditioning",
-        "Private bathroom (shower)",
-        "Private balcony",
-        "Premium furnishings",
-        "Mini bar",
-        "Complimentary breakfast",
-        "Free Wi-Fi",
-        "Work desk",
-        "Daily housekeeping",
-        "Safe",
-        "Room service"
-      ],
-      priceFrom: "18,000",
-      gallery: [
-        "/images/bedroom4_1.jpg",
-        "/images/bedroom4_2.jpg",
-        "/images/bedroom4_3.jpg",
-        "/images/bedroom4_4.jpg",
-        "/images/bedroom4_5.jpg"
-      ]
-    },
-    "whole-villa": {
-      id: "whole-villa",
-      name: "Whole Villa Rental",
-      shortDescription: "Entire Villa — Up to 12 guests, all rooms included",
-      longDescription: "Book the entire Dutch Wall Fort villa for your group, family reunion, or special celebration. This exclusive rental includes all four beautifully appointed rooms, common living areas, terrace, full kitchen access, and complete privacy for your group. Perfect for larger gatherings, corporate retreats, or anyone seeking an authentic Galle Fort experience with the luxury of an entire historic villa. Your group will enjoy private dining areas, multiple balconies, garden access, and personalized concierge service. The whole villa rental provides the ultimate in comfort and exclusivity, with dedicated staff ensuring your every need is met throughout your stay.",
-      capacity: 12,
-      beds: "4 rooms: 3 double beds + 4 single beds",
-      amenities: [
-        "All 4 rooms included",
-        "Exclusive villa access",
-        "Full kitchen access",
-        "Terrace & garden",
-        "Multiple balconies",
-        "Group breakfast service",
-        "Concierge service",
-        "Event planning assistance",
-        "Private chef available",
-        "Daily housekeeping",
-        "Welcome amenities",
-        "Airport transfers"
-      ],
-      priceFrom: "45,000",
-      gallery: [
-        "/images/Exterior_1.jpg",
-        "/images/livingroom.jpg",
-        "/images/dining area_1.jpg",
-        "/images/balcony_1.jpg",
-        "/images/kitchen_1.jpg",
-        "/images/Exterior_3.jpg",
-        "/images/balcony_2.jpg"
-      ]
+  useEffect(() => {
+    const fetchRoom = async () => {
+      try {
+        const response = await roomsAPI.getBySlug(slug!);
+        setRoom(response.data);
+      } catch (error) {
+        console.error('Error fetching room:', error);
+        setError('Room not found');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (slug) {
+      fetchRoom();
     }
-  };
+  }, [slug]);
 
-  const room = rooms[slug || ''];
-
-  if (!room) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
+      </div>
+    );
+  }
+
+  if (error || !room) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Room Not Found</h1>
+          <p className="text-gray-600 mb-6">The room you're looking for doesn't exist.</p>
           <Link
             to="/rooms"
-            className="bg-amber-600 text-white px-6 py-2 rounded-full font-medium hover:bg-amber-700 transition-colors duration-200"
+            className="bg-amber-600 text-white px-6 py-3 rounded-md font-medium hover:bg-amber-700 transition-colors duration-200 inline-flex items-center"
           >
-            View All Rooms
+            <ArrowLeft size={20} className="mr-2" />
+            Back to Rooms
           </Link>
         </div>
       </div>
     );
   }
+
+
 
   const nearbyAttractions = [
     { name: "Galle Lighthouse", time: "5 min walk" },
@@ -224,13 +121,13 @@ const RoomDetail = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative h-96 md:h-[500px] rounded-lg overflow-hidden mb-8">
           <img
-            src={room.gallery[0]}
+            src={room.images?.[0] || '/images/placeholder.jpg'}
             alt={room.name}
             className="w-full h-full object-cover cursor-pointer"
-            onClick={() => setSelectedImage(room.gallery[0])}
+            onClick={() => setSelectedImage(room.images?.[0] || null)}
           />
           <div className="absolute bottom-4 right-4 bg-white bg-opacity-90 text-gray-800 px-4 py-2 rounded-full text-sm font-medium">
-            Click to enlarge • {room.gallery.length} photos
+            Click to enlarge • {room.images?.length || 0} photos
           </div>
         </div>
       </div>
@@ -275,7 +172,7 @@ const RoomDetail = () => {
             <div className="mb-8">
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">Amenities</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {room.amenities.map((amenity: string, index: number) => (
+                {room.amenities?.map((amenity: string, index: number) => (
                   <div key={index} className="flex items-center">
                     <div className="w-2 h-2 bg-amber-600 rounded-full mr-3"></div>
                     <span className="text-gray-700">{amenity}</span>
@@ -288,7 +185,7 @@ const RoomDetail = () => {
             <div className="mb-8">
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">Gallery</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {room.gallery.slice(1).map((image: string, index: number) => (
+                {room.images?.slice(1).map((image: string, index: number) => (
                   <div
                     key={index}
                     className="relative h-32 rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity duration-200"
@@ -337,7 +234,7 @@ const RoomDetail = () => {
               {/* Pricing */}
               <div className="bg-gray-50 p-6 rounded-lg mb-6">
                 <div className="text-center mb-4">
-                  <div className="text-3xl font-bold text-gray-900">LKR {room.priceFrom}</div>
+                  <div className="text-3xl font-bold text-gray-900">LKR {parseInt(room.price).toLocaleString()}</div>
                   <div className="text-gray-600">per night</div>
                   <div className="text-sm text-gray-500 mt-1">Taxes & fees included</div>
                 </div>
