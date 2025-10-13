@@ -9,6 +9,7 @@ import {
   Calendar, 
   Images,
   Video,
+  Compass,
   LogOut,
   Menu,
   X
@@ -27,6 +28,7 @@ const AdminLayout = () => {
     { name: 'Bookings', href: '/admin/bookings', icon: Calendar },
     { name: 'Gallery', href: '/admin/gallery', icon: Images },
     { name: 'Virtual Tours', href: '/admin/virtual-tours', icon: Video },
+    { name: 'Attractions', href: '/admin/attractions', icon: Compass },
   ];
 
   const isActive = (href: string) => {

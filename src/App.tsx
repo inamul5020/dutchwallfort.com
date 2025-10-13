@@ -27,6 +27,7 @@ import AdminServiceForm from './pages/admin/AdminServiceForm';
 import AdminBookings from './pages/admin/AdminBookings';
 import AdminGallery from './pages/admin/AdminGallery';
 import AdminVirtualTours from './pages/admin/AdminVirtualTours';
+import AdminAttractions from './pages/admin/AdminAttractions';
 
 function App() {
   return (
@@ -154,6 +155,7 @@ function App() {
             <Route path="bookings" element={<AdminBookings />} />
             <Route path="gallery" element={<AdminGallery />} />
             <Route path="virtual-tours" element={<AdminVirtualTours />} />
+            <Route path="attractions" element={<AdminAttractions />} />
           </Route>
         </Routes>
       </Router>

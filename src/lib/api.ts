@@ -134,4 +134,22 @@ export const virtualToursAPI = {
   delete: (id: number) => api.delete(`/virtual-tours/${id}`),
 };
 
+export const attractionsAPI = {
+  getAll: (category?: string, featured?: boolean, active?: boolean, limit?: number, search?: string) => 
+    api.get('/attractions', { 
+      params: { 
+        ...(category && { category }), 
+        ...(featured !== undefined && { featured }), 
+        ...(active !== undefined && { active }),
+        ...(limit && { limit }),
+        ...(search && { search })
+      } 
+    }),
+  getById: (id: number) => api.get(`/attractions/${id}`),
+  getBySlug: (slug: string) => api.get(`/attractions/slug/${slug}`),
+  create: (data: any) => api.post('/attractions', data),
+  update: (id: number, data: any) => api.put(`/attractions/${id}`, data),
+  delete: (id: number) => api.delete(`/attractions/${id}`),
+};
+
 export default api;

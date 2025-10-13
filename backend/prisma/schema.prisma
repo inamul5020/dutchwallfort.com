@@ -189,3 +189,32 @@ model VirtualTour {
 
   @@map("virtual_tours")
 }
+
+model Attraction {
+  id          Int      @id @default(autoincrement())
+  name        String
+  slug        String   @unique
+  description String
+  longDescription String? @map("long_description")
+  category    String   @default("historical") // "historical", "cultural", "religious", "natural", "shopping", "dining", "entertainment"
+  address     String?
+  latitude    Float?
+  longitude   Float?
+  phone       String?
+  website     String?
+  email       String?
+  openingHours Json?   @default("{}") @map("opening_hours") // Store as JSON: {"monday": "9:00-17:00", "tuesday": "9:00-17:00", ...}
+  priceRange  String?  @map("price_range") // "Free", "$", "$$", "$$$", "$$$$"
+  rating      Float?   @default(0)
+  imageUrl    String?  @map("image_url")
+  gallery     Json     @default("[]") // Array of image URLs
+  features    Json     @default("[]") // Array of features/amenities
+  distance    Float?   // Distance from Dutch Wall Fort in km
+  isActive    Boolean  @default(true) @map("is_active")
+  isFeatured  Boolean  @default(false) @map("is_featured")
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("attractions")
+}
