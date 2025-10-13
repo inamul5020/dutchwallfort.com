@@ -25,6 +25,7 @@ import AdminBlogForm from './pages/admin/AdminBlogForm';
 import AdminServices from './pages/admin/AdminServices';
 import AdminServiceForm from './pages/admin/AdminServiceForm';
 import AdminBookings from './pages/admin/AdminBookings';
+import AdminGallery from './pages/admin/AdminGallery';
 
 function App() {
   return (
@@ -150,6 +151,7 @@ function App() {
             <Route path="services/new" element={<AdminServiceForm />} />
             <Route path="services/edit/:id" element={<AdminServiceForm />} />
             <Route path="bookings" element={<AdminBookings />} />
+            <Route path="gallery" element={<AdminGallery />} />
           </Route>
         </Routes>
       </Router>

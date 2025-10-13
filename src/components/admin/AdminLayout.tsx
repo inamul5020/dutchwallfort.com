@@ -7,6 +7,7 @@ import {
   FileText, 
   MapPin, 
   Calendar, 
+  Images,
   LogOut,
   Menu,
   X
@@ -23,6 +24,7 @@ const AdminLayout = () => {
     { name: 'Blog Posts', href: '/admin/blog', icon: FileText },
     { name: 'Services', href: '/admin/services', icon: MapPin },
     { name: 'Bookings', href: '/admin/bookings', icon: Calendar },
+    { name: 'Gallery', href: '/admin/gallery', icon: Images },
   ];
 
   const isActive = (href: string) => {

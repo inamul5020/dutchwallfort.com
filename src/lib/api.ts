@@ -101,4 +101,20 @@ export const testimonialsAPI = {
   delete: (id: number) => api.delete(`/testimonials/${id}`),
 };
 
+export const galleryAPI = {
+  getAll: (category?: string, featured?: boolean, active?: boolean, limit?: number) => 
+    api.get('/gallery', { 
+      params: { 
+        ...(category && { category }), 
+        ...(featured !== undefined && { featured }), 
+        ...(active !== undefined && { active }),
+        ...(limit && { limit })
+      } 
+    }),
+  getById: (id: number) => api.get(`/gallery/${id}`),
+  create: (data: any) => api.post('/gallery', data),
+  update: (id: number, data: any) => api.put(`/gallery/${id}`, data),
+  delete: (id: number) => api.delete(`/gallery/${id}`),
+};
+
 export default api;

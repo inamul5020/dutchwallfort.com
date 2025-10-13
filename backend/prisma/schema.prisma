@@ -152,3 +152,20 @@ model Testimonial {
 
   @@map("testimonials")
 }
+
+model GalleryImage {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  imageUrl    String   @map("image_url")
+  thumbnailUrl String? @map("thumbnail_url")
+  category    String   @default("general")
+  altText     String?  @map("alt_text")
+  sortOrder   Int      @default(0) @map("sort_order")
+  isActive    Boolean  @default(true) @map("is_active")
+  isFeatured  Boolean  @default(false) @map("is_featured")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("gallery_images")
+}
