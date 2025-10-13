@@ -3,15 +3,15 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+// CORS headers
+const headers = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
 export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
-  });
+  return new NextResponse(null, { status: 200, headers });
 }
 
 export async function GET(
@@ -31,7 +31,7 @@ export async function GET(
         { success: false, error: 'Blog post not found' },
         { 
           status: 404,
-          headers: { 'Access-Control-Allow-Origin': '*' }
+          headers
         }
       );
     }
@@ -60,16 +60,14 @@ export async function GET(
     return NextResponse.json({
       success: true,
       data: mappedPost
-    }, {
-      headers: { 'Access-Control-Allow-Origin': '*' }
-    });
+    }, { headers });
   } catch (error) {
     console.error('Error fetching blog post:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to fetch blog post' },
       { 
         status: 500,
-        headers: { 'Access-Control-Allow-Origin': '*' }
+        headers
       }
     );
   }

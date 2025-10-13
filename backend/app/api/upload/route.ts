@@ -3,15 +3,15 @@ import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
 
+// CORS headers
+const headers = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
 export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
-  });
+  return new NextResponse(null, { status: 200, headers });
 }
 
 export async function POST(request: NextRequest) {
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
         { success: false, error: 'No file provided' },
         { 
           status: 400,
-          headers: { 'Access-Control-Allow-Origin': '*' }
+          headers
         }
       );
     }
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
         { success: false, error: 'Invalid file type. Only JPEG, PNG, and WebP images are allowed.' },
         { 
           status: 400,
-          headers: { 'Access-Control-Allow-Origin': '*' }
+          headers
         }
       );
     }
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
         { success: false, error: 'File too large. Maximum size is 5MB.' },
         { 
           status: 400,
-          headers: { 'Access-Control-Allow-Origin': '*' }
+          headers
         }
       );
     }
@@ -82,9 +82,7 @@ export async function POST(request: NextRequest) {
         size: file.size,
         type: file.type
       }
-    }, {
-      headers: { 'Access-Control-Allow-Origin': '*' }
-    });
+    }, { headers });
 
   } catch (error) {
     console.error('Error uploading file:', error);
@@ -92,7 +90,7 @@ export async function POST(request: NextRequest) {
       { success: false, error: 'Failed to upload file' },
       { 
         status: 500,
-        headers: { 'Access-Control-Allow-Origin': '*' }
+        headers
       }
     );
   }
