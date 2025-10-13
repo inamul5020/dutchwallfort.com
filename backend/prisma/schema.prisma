@@ -122,3 +122,19 @@ model Review {
 
   @@map("reviews")
 }
+
+model Testimonial {
+  id         Int      @id @default(autoincrement())
+  guestName  String   @map("guest_name")
+  guestLocation String? @map("guest_location")
+  rating     Int
+  title      String?
+  content    String
+  avatar     String?
+  isFeatured Boolean  @default(false) @map("is_featured")
+  isApproved Boolean  @default(false) @map("is_approved")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("testimonials")
+}

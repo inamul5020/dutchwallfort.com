@@ -1,15 +1,26 @@
-import React, { useState } from 'react';
-import { Calendar, Users, Phone, Mail } from 'lucide-react';
-import { bookingsAPI } from '../lib/api';
+import React, { useState, useEffect } from 'react';
+import { Calendar, Users, Phone, Mail, AlertCircle, CheckCircle } from 'lucide-react';
+import { bookingsAPI, roomsAPI } from '../lib/api';
 
 interface BookingFormProps {
   className?: string;
   title?: string;
+  selectedRoom?: string;
+}
+
+interface Room {
+  id: number;
+  name: string;
+  slug: string;
+  capacity: number;
+  price: string;
+  isActive: boolean;
 }
 
 const BookingForm: React.FC<BookingFormProps> = ({ 
   className = "", 
-  title = "Send Booking Inquiry" 
+  title = "Send Booking Inquiry",
+  selectedRoom = ""
 }) => {
   const [formData, setFormData] = useState({
     fullName: '',
@@ -19,7 +30,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
     checkOut: '',
     adults: '2',
     children: '0',
-    room: 'Any Room',
+    room: selectedRoom || 'Any Room',
     message: '',
     contactMethod: 'Email',
     consent: false
@@ -27,6 +38,75 @@ const BookingForm: React.FC<BookingFormProps> = ({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [isLoadingRooms, setIsLoadingRooms] = useState(true);
+  const [validationErrors, setValidationErrors] = useState<{[key: string]: string}>({});
+  const [totalNights, setTotalNights] = useState(0);
+  const [estimatedPrice, setEstimatedPrice] = useState(0);
+
+  // Load rooms on component mount
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const response = await roomsAPI.getAll();
+        setRooms(response.data.data || []);
+      } catch (error) {
+        console.error('Error fetching rooms:', error);
+      } finally {
+        setIsLoadingRooms(false);
+      }
+    };
+    fetchRooms();
+  }, []);
+
+  // Calculate total nights and estimated price when dates or room changes
+  useEffect(() => {
+    if (formData.checkIn && formData.checkOut) {
+      const checkIn = new Date(formData.checkIn);
+      const checkOut = new Date(formData.checkOut);
+      const nights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
+      setTotalNights(nights);
+
+      if (formData.room !== 'Any Room') {
+        const selectedRoomData = rooms.find(room => room.name === formData.room);
+        if (selectedRoomData) {
+          setEstimatedPrice(nights * parseFloat(selectedRoomData.price));
+        }
+      }
+    }
+  }, [formData.checkIn, formData.checkOut, formData.room, rooms]);
+
+  const validateForm = () => {
+    const errors: {[key: string]: string} = {};
+
+    // Check if check-out is after check-in
+    if (formData.checkIn && formData.checkOut) {
+      const checkIn = new Date(formData.checkIn);
+      const checkOut = new Date(formData.checkOut);
+      if (checkOut <= checkIn) {
+        errors.checkOut = 'Check-out date must be after check-in date';
+      }
+    }
+
+    // Check if dates are in the future
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (formData.checkIn && new Date(formData.checkIn) < today) {
+      errors.checkIn = 'Check-in date must be today or later';
+    }
+
+    // Check guest capacity
+    const totalGuests = parseInt(formData.adults) + parseInt(formData.children);
+    if (formData.room !== 'Any Room') {
+      const selectedRoomData = rooms.find(room => room.name === formData.room);
+      if (selectedRoomData && totalGuests > selectedRoomData.capacity) {
+        errors.adults = `Selected room can only accommodate ${selectedRoomData.capacity} guests`;
+      }
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -38,6 +118,11 @@ const BookingForm: React.FC<BookingFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+    
     setIsSubmitting(true);
     
     try {
@@ -208,9 +293,17 @@ const BookingForm: React.FC<BookingFormProps> = ({
                   value={formData.checkIn}
                   onChange={handleChange}
                   min={new Date().toISOString().split('T')[0]}
-                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
+                  className={`w-full pl-11 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors ${
+                    validationErrors.checkIn ? 'border-red-300' : 'border-gray-300'
+                  }`}
                 />
               </div>
+              {validationErrors.checkIn && (
+                <div className="flex items-center mt-1 text-sm text-red-600">
+                  <AlertCircle size={16} className="mr-1" />
+                  {validationErrors.checkIn}
+                </div>
+              )}
             </div>
 
             <div className="space-y-1">
@@ -227,11 +320,45 @@ const BookingForm: React.FC<BookingFormProps> = ({
                   value={formData.checkOut}
                   onChange={handleChange}
                   min={formData.checkIn || new Date().toISOString().split('T')[0]}
-                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
+                  className={`w-full pl-11 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors ${
+                    validationErrors.checkOut ? 'border-red-300' : 'border-gray-300'
+                  }`}
                 />
               </div>
+              {validationErrors.checkOut && (
+                <div className="flex items-center mt-1 text-sm text-red-600">
+                  <AlertCircle size={16} className="mr-1" />
+                  {validationErrors.checkOut}
+                </div>
+              )}
             </div>
           </div>
+
+          {/* Price Estimation */}
+          {totalNights > 0 && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h5 className="font-medium text-amber-800">Estimated Total</h5>
+                  <p className="text-sm text-amber-700">
+                    {totalNights} night{totalNights !== 1 ? 's' : ''} 
+                    {formData.room !== 'Any Room' && ` • ${formData.room}`}
+                  </p>
+                </div>
+                <div className="text-right">
+                  {estimatedPrice > 0 ? (
+                    <div className="text-lg font-bold text-amber-800">
+                      LKR {estimatedPrice.toLocaleString()}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-amber-600">
+                      Select a room for pricing
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Guests and Room */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
@@ -252,9 +379,17 @@ const BookingForm: React.FC<BookingFormProps> = ({
                   value={formData.adults}
                   onChange={handleChange}
                   placeholder="2"
-                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
+                  className={`w-full pl-11 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors ${
+                    validationErrors.adults ? 'border-red-300' : 'border-gray-300'
+                  }`}
                 />
               </div>
+              {validationErrors.adults && (
+                <div className="flex items-center mt-1 text-sm text-red-600">
+                  <AlertCircle size={16} className="mr-1" />
+                  {validationErrors.adults}
+                </div>
+              )}
             </div>
 
             {/* Children */}
@@ -287,14 +422,19 @@ const BookingForm: React.FC<BookingFormProps> = ({
                 required
                 value={formData.room}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors appearance-none bg-white"
+                disabled={isLoadingRooms}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors appearance-none bg-white disabled:opacity-50"
               >
                 <option value="Any Room">Any Available Room</option>
-                <option value="Deluxe Family Room">Deluxe Family Room</option>
-                <option value="Superior Room">Superior Room</option>
-                <option value="Standard Room">Standard Room</option>
-                <option value="Full Villa">Full Villa</option>
+                {rooms.map((room) => (
+                  <option key={room.id} value={room.name}>
+                    {room.name} - LKR {parseInt(room.price).toLocaleString()}/night
+                  </option>
+                ))}
               </select>
+              {isLoadingRooms && (
+                <p className="text-sm text-gray-500 mt-1">Loading rooms...</p>
+              )}
             </div>
           </div>
         </div>

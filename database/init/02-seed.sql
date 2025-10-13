@@ -77,3 +77,13 @@ INSERT INTO bookings (guest_name, guest_email, guest_phone, check_in, check_out,
 ('Anna Kowalski', 'anna.kowalski@email.com', '+48-22-123-4567', '2024-12-30', '2025-01-02', 4, 2, 'New Year celebration in Galle Fort!', 'pending'),
 ('Robert Brown', 'robert.brown@email.com', '+1-555-0456', '2025-01-05', '2025-01-10', 5, 12, 'Corporate retreat. Need the whole villa for our team.', 'confirmed')
 ON CONFLICT DO NOTHING;
+
+-- Insert sample testimonials
+INSERT INTO testimonials (guest_name, guest_location, rating, title, content, is_featured, is_approved) VALUES
+('Sarah & Michael Johnson', 'New York, USA', 5, 'Perfect Galle Fort Experience', 'Our stay at Dutch Wall Fort was absolutely magical! The historic charm combined with modern amenities made it the perfect base for exploring Galle Fort. The staff was incredibly welcoming and the breakfast was delicious. We can''t wait to return!', true, true),
+('Emma Thompson', 'London, UK', 5, 'A Hidden Gem', 'What a beautiful property! The attention to detail in preserving the colonial architecture while providing modern comfort is remarkable. The balcony views are stunning, and the location right in the heart of Galle Fort is unbeatable. Highly recommended!', true, true),
+('James & Lisa Chen', 'Melbourne, Australia', 5, 'Exceeded All Expectations', 'We booked the whole villa for our family reunion and it was perfect! Each room has its own character, the common areas are spacious, and the garden is lovely. The staff went above and beyond to make our stay special. Thank you for the memories!', true, true),
+('Maria Rodriguez', 'Barcelona, Spain', 4, 'Charming and Authentic', 'Dutch Wall Fort offers an authentic Galle Fort experience. The rooms are beautifully decorated, the location is perfect for exploring, and the staff is very helpful. The only minor issue was the WiFi speed, but everything else was wonderful.', false, true),
+('Ahmed Hassan', 'Dubai, UAE', 5, 'Outstanding Hospitality', 'From the moment we arrived, we felt welcomed and cared for. The property is stunning, the rooms are comfortable, and the breakfast is excellent. The staff helped us plan our Galle Fort itinerary and even arranged a tuk-tuk tour. Highly recommended!', false, true),
+('Sophie & Pierre Dubois', 'Paris, France', 5, 'Magnifique!', 'Une expérience inoubliable dans le fort de Galle! L''architecture coloniale hollandaise est préservée avec goût, les chambres sont confortables et l''accueil est chaleureux. Nous recommandons vivement cette adresse.', false, true)
+ON CONFLICT DO NOTHING;

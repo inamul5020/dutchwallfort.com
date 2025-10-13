@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { roomsAPI } from '../../lib/api';
 import { ArrowLeft, Save } from 'lucide-react';
+import ImageUpload from '../../components/ImageUpload';
 
 interface RoomFormData {
   slug: string;
@@ -35,7 +36,6 @@ const AdminRoomForm = () => {
   });
 
   const [amenityInput, setAmenityInput] = useState('');
-  const [galleryInput, setGalleryInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -134,22 +134,6 @@ const AdminRoomForm = () => {
     }));
   };
 
-  const addGalleryImage = () => {
-    if (galleryInput.trim()) {
-      setFormData(prev => ({
-        ...prev,
-        images: [...prev.images, galleryInput.trim()],
-      }));
-      setGalleryInput('');
-    }
-  };
-
-  const removeGalleryImage = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index),
-    }));
-  };
 
   return (
     <div className="space-y-6">
@@ -336,40 +320,23 @@ const AdminRoomForm = () => {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Gallery Images
           </label>
-          <div className="flex space-x-2 mb-2">
-            <input
-              type="text"
-              value={galleryInput}
-              onChange={(e) => setGalleryInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addGalleryImage())}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500"
-              placeholder="Image path (e.g., /images/room1.jpg)"
-            />
-            <button
-              type="button"
-              onClick={addGalleryImage}
-              className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
-            >
-              Add
-            </button>
-          </div>
-          <div className="space-y-2">
-            {formData.images.map((image, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-2 bg-gray-50 rounded-md"
-              >
-                <span className="text-sm text-gray-700">{image}</span>
-                <button
-                  type="button"
-                  onClick={() => removeGalleryImage(index)}
-                  className="text-red-600 hover:text-red-800"
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
-          </div>
+          <ImageUpload
+            onImageUpload={(url) => {
+              setFormData(prev => ({
+                ...prev,
+                images: [...prev.images, url]
+              }));
+            }}
+            onImageRemove={(url) => {
+              setFormData(prev => ({
+                ...prev,
+                images: prev.images.filter(img => img !== url)
+              }));
+            }}
+            existingImages={formData.images}
+            multiple={true}
+            maxImages={10}
+          />
         </div>
 
         <div className="flex justify-end space-x-4">

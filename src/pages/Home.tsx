@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Wifi, Wind, Bath, Coffee, Users, Star, ArrowRight, Calendar, Phone, ChevronLeft, ChevronRight } from 'lucide-react';
+import Testimonials from '../components/Testimonials';
 
 const Home = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -428,6 +429,17 @@ const Home = () => {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-16 sm:py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Testimonials 
+            featuredOnly={true} 
+            maxItems={3} 
+            showNavigation={true}
+          />
         </div>
       </section>
 

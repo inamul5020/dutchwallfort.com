@@ -121,6 +121,15 @@ docker-compose up -d
 - `GET /api/reviews` - List approved reviews
 - `POST /api/reviews` - Create new review
 
+### Testimonials Management
+- `GET /api/testimonials` - List all testimonials
+- `GET /api/testimonials?featured=true` - List featured testimonials
+- `GET /api/testimonials?approved=true` - List approved testimonials
+- `POST /api/testimonials` - Create new testimonial
+
+### File Upload
+- `POST /api/upload` - Upload images (supports JPEG, PNG, WebP up to 5MB)
+
 ### Contact Management
 - `GET /api/contact` - List all messages (Admin)
 - `POST /api/contact` - Create new message
@@ -233,6 +242,14 @@ The database is populated with 4 rooms:
 - **Containerization**: Docker & Docker Compose
 
 ## 🆕 Recent Updates & Fixes
+
+### v3.3.0 - Advanced Features & Enhanced User Experience
+- ✅ **Enhanced Booking Form**: Added date validation, room capacity checking, and price estimation
+- ✅ **Image Upload System**: Implemented drag-and-drop image upload with file validation
+- ✅ **Testimonials System**: Added customer testimonials with rating system and featured display
+- ✅ **Dynamic Room Loading**: Booking form now loads rooms from database with real-time pricing
+- ✅ **Form Validation**: Added comprehensive validation with user-friendly error messages
+- ✅ **Price Calculator**: Real-time price estimation based on selected room and dates
 
 ### v3.2.0 - Room Details Page & Complete Data Integration
 - ✅ **Fixed Room Details Page**: Resolved "Room Not Found" issue on room detail pages

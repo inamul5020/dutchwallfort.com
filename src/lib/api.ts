@@ -76,4 +76,18 @@ export const blogAPI = {
   delete: (id: number) => api.delete(`/blog/${id}`),
 };
 
+export const testimonialsAPI = {
+  getAll: (featured?: boolean, approved?: boolean) => 
+    api.get('/testimonials', { 
+      params: { 
+        ...(featured !== undefined && { featured }), 
+        ...(approved !== undefined && { approved }) 
+      } 
+    }),
+  getById: (id: number) => api.get(`/testimonials/${id}`),
+  create: (data: any) => api.post('/testimonials', data),
+  update: (id: number, data: any) => api.put(`/testimonials/${id}`, data),
+  delete: (id: number) => api.delete(`/testimonials/${id}`),
+};
+
 export default api;
