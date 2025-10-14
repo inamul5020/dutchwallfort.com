@@ -50,12 +50,17 @@ const Blog = () => {
 
   const fetchPosts = async () => {
     try {
+      console.log('Fetching blog posts...');
       const response = await blogAPI.getAll(
-        filterStatus === 'all' ? undefined : 'published',
+        filterStatus === 'all' ? undefined : filterStatus,
         selectedCategory === 'all' ? undefined : selectedCategory
       );
-      if (response.data) {
-        setPosts(response.data);
+      console.log('API response:', response);
+      if (response.data.success) {
+        console.log('Setting posts:', response.data.data);
+        setPosts(response.data.data);
+      } else {
+        console.error('API response not successful:', response.data);
       }
     } catch (error) {
       console.error('Error fetching blog posts:', error);
@@ -66,9 +71,14 @@ const Blog = () => {
 
   const fetchCategories = async () => {
     try {
+      console.log('Fetching blog categories...');
       const response = await blogCategoriesAPI.getAll(true);
-      if (response.data) {
-        setCategories(response.data);
+      console.log('Categories API response:', response);
+      if (response.data.success) {
+        console.log('Setting categories:', response.data.data);
+        setCategories(response.data.data);
+      } else {
+        console.error('Categories API response not successful:', response.data);
       }
     } catch (error) {
       console.error('Error fetching blog categories:', error);

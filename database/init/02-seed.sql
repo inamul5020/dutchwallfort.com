@@ -27,9 +27,18 @@ INSERT INTO services (slug, name, description, type, duration, price, features, 
 ('laundry-service', 'Laundry Service', 'Professional laundry and dry cleaning service with same-day or next-day delivery.', 'services', '24-48 hours', 500.00, '["Same/next day service", "Professional cleaning", "Folded and pressed", "Per kg pricing"]', true)
 ON CONFLICT (slug) DO NOTHING;
 
+-- Insert blog categories
+INSERT INTO blog_categories (slug, name, description, color, is_active) VALUES
+('travel-guides', 'Travel Guides', 'Comprehensive guides for exploring Galle and Sri Lanka', '#3B82F6', true),
+('local-culture', 'Local Culture', 'Insights into Sri Lankan culture and traditions', '#10B981', true),
+('accommodation-tips', 'Accommodation Tips', 'Advice for staying in historic Galle Fort', '#F59E0B', true),
+('food-drink', 'Food & Drink', 'Local cuisine and dining recommendations', '#EF4444', true),
+('historical-sites', 'Historical Sites', 'Exploring the rich history of Galle Fort', '#8B5CF6', true)
+ON CONFLICT (slug) DO NOTHING;
+
 -- Insert sample blog post
-INSERT INTO blog_posts (slug, title, excerpt, content, author_id, status, published_at) VALUES
-('discover-galle-fort-guide', 'Discover Galle Fort: A Complete Guide', 'Everything you need to know about exploring this UNESCO World Heritage Site and its rich Dutch colonial history.',
+INSERT INTO blog_posts (slug, title, excerpt, content, category_id, author_id, status, published_at) VALUES
+('discover-galle-fort-guide', 'Discover Galle Fort: A Complete Guide', 'Everything you need to know about exploring this UNESCO World Heritage Site and its rich Dutch colonial history.', 1,
 'Galle Fort, located on the southwestern tip of Sri Lanka, is a living monument to the islands colonial past. Built first by the Portuguese in 1588, then extensively fortified by the Dutch during the 17th century, the fort stands as one of the best-preserved colonial fortresses in Asia.
 
 ## A Walk Through History
