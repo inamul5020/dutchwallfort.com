@@ -36,7 +36,7 @@ const AdminRooms = () => {
 
   const toggleRoomStatus = async (id: number, currentStatus: boolean) => {
     try {
-      await roomsAPI.update(id, { isActive: !currentStatus });
+      await adminRoomsAPI.update(id, { isActive: !currentStatus });
       fetchRooms();
     } catch (error) {
       console.error('Error updating room status:', error);
@@ -47,7 +47,7 @@ const AdminRooms = () => {
     if (!confirm('Are you sure you want to delete this room?')) return;
 
     try {
-      await roomsAPI.delete(id);
+      await adminRoomsAPI.delete(id);
       fetchRooms();
     } catch (error) {
       console.error('Error deleting room:', error);

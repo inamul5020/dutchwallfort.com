@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { adminHandler } from "../../../../lib/api-middleware";
+import { adminHandler, adminWriteHandler } from "../../../../lib/api-middleware";
 
 const prisma = new PrismaClient();
 
@@ -25,8 +25,41 @@ async function getAdminRoomsHandler(request: NextRequest, user: any): Promise<Ne
   }
 }
 
-// Export admin handler
+async function createAdminRoomHandler(request: NextRequest, user: any): Promise<NextResponse> {
+  try {
+    const body = await request.json();
+
+    const room = await prisma.room.create({
+      data: {
+        slug: body.slug,
+        name: body.name,
+        shortDescription: body.shortDescription,
+        longDescription: body.longDescription,
+        capacity: body.capacity,
+        beds: body.beds,
+        amenities: body.amenities || [],
+        price: body.price,
+        images: body.images || [],
+        isActive: body.isActive !== undefined ? body.isActive : true,
+      }
+    });
+
+    return NextResponse.json({
+      success: true,
+      data: room
+    });
+  } catch (error) {
+    console.error('Error creating admin room:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to create room' },
+      { status: 500 }
+    );
+  }
+}
+
+// Export admin handlers
 export const GET = adminHandler(getAdminRoomsHandler);
+export const POST = adminWriteHandler(createAdminRoomHandler, 'room');
 
 // Add explicit OPTIONS handler for CORS
 export async function OPTIONS() {

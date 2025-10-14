@@ -53,11 +53,11 @@ export const roomsAPI = {
 
 export const adminRoomsAPI = {
   getAll: () => api.get('/admin/rooms'),
-  getById: (id: number) => api.get(`/rooms/by-id/${id}`),
+  getById: (id: number) => api.get(`/admin/rooms/${id}`),
   getBySlug: (slug: string) => api.get(`/rooms/${slug}`),
-  create: (data: any) => api.post('/rooms', data),
-  update: (id: number, data: any) => api.put(`/rooms/by-id/${id}`, data),
-  delete: (id: number) => api.delete(`/rooms/by-id/${id}`),
+  create: (data: any) => api.post('/admin/rooms', data),
+  update: (id: number, data: any) => api.put(`/admin/rooms/${id}`, data),
+  delete: (id: number) => api.delete(`/admin/rooms/${id}`),
 };
 
 export const servicesAPI = {
