@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { roomsAPI, servicesAPI, blogAPI, bookingsAPI } from '../../lib/api';
+import { adminRoomsAPI, servicesAPI, blogAPI, bookingsAPI } from '../../lib/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { Bed, FileText, MapPin, Calendar } from 'lucide-react';
 
@@ -34,12 +34,12 @@ const AdminDashboard = () => {
       console.log('Token in localStorage:', localStorage.getItem('token'));
       
       // Fetch stats
-      const [roomsResult, postsResult, servicesResult, bookingsResult] = await Promise.all([
-        roomsAPI.getAll(),
-        blogAPI.getAll(),
-        servicesAPI.getAll(),
-        bookingsAPI.getAll()
-      ]);
+            const [roomsResult, postsResult, servicesResult, bookingsResult] = await Promise.all([
+              adminRoomsAPI.getAll(),
+              blogAPI.getAll(),
+              servicesAPI.getAll(),
+              bookingsAPI.getAll()
+            ]);
 
       console.log('API Results:', {
         rooms: roomsResult.data,

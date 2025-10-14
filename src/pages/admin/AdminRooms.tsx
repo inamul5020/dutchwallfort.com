@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { roomsAPI } from '../../lib/api';
+import { adminRoomsAPI } from '../../lib/api';
 import { Bed, Plus, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
 
 interface Room {
@@ -25,7 +25,7 @@ const AdminRooms = () => {
 
   const fetchRooms = async () => {
     try {
-      const response = await roomsAPI.getAll();
+        const response = await adminRoomsAPI.getAll();
       setRooms(response.data?.data || []);
     } catch (error) {
       console.error('Error fetching rooms:', error);

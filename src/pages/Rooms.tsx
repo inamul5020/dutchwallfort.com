@@ -45,6 +45,7 @@ const Rooms = () => {
   }
 
 
+
   const getAmenityIcon = (amenity: string) => {
     const iconMap: { [key: string]: React.ComponentType<{ size?: number; className?: string }> } = {
       'AC': Wind,
