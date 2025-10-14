@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { publicHandler, adminWriteHandler } from "../../../lib/api-middleware";
-// import { sendBookingConfirmation, sendBookingNotificationToAdmin } from "../../lib/mailjet";
+import { sendBookingConfirmation, sendBookingNotificationToAdmin } from "../../../lib/mailjet";
 
 const prisma = new PrismaClient();
 
@@ -73,39 +73,39 @@ async function createBookingHandler(request: NextRequest): Promise<NextResponse>
     const roomPrice = booking.room ? parseFloat(booking.room.price.toString()) : 0;
     const estimatedPrice = roomPrice * totalNights;
 
-    // Send email notifications (temporarily disabled)
-    // try {
-    //   // Send confirmation email to guest (pending status)
-    //   await sendBookingConfirmation({
-    //     guestName: booking.guestName,
-    //     guestEmail: booking.guestEmail,
-    //     checkIn: body.checkIn,
-    //     checkOut: body.checkOut,
-    //     roomName: booking.room?.name || 'Any Room',
-    //     guests: booking.guests,
-    //     totalNights: totalNights,
-    //     estimatedPrice: estimatedPrice,
-    //     message: booking.message,
-    //     status: 'pending',
-    //   });
+    // Send email notifications
+    try {
+      // Send confirmation email to guest (pending status)
+      await sendBookingConfirmation({
+        guestName: booking.guestName,
+        guestEmail: booking.guestEmail,
+        checkIn: body.checkIn,
+        checkOut: body.checkOut,
+        roomName: booking.room?.name || 'Any Room',
+        guests: booking.guests,
+        totalNights: totalNights,
+        estimatedPrice: estimatedPrice,
+        message: booking.message,
+        status: 'pending',
+      });
 
-    //   // Send notification email to admin
-    //   await sendBookingNotificationToAdmin({
-    //     guestName: booking.guestName,
-    //     guestEmail: booking.guestEmail,
-    //     guestPhone: booking.guestPhone,
-    //     checkIn: body.checkIn,
-    //     checkOut: body.checkOut,
-    //     roomName: booking.room?.name || 'Any Room',
-    //     guests: booking.guests,
-    //     message: booking.message,
-    //   });
+      // Send notification email to admin
+      await sendBookingNotificationToAdmin({
+        guestName: booking.guestName,
+        guestEmail: booking.guestEmail,
+        guestPhone: booking.guestPhone,
+        checkIn: body.checkIn,
+        checkOut: body.checkOut,
+        roomName: booking.room?.name || 'Any Room',
+        guests: booking.guests,
+        message: booking.message,
+      });
 
-    //   console.log('Email notifications sent successfully');
-    // } catch (emailError) {
-    //   console.error('Error sending email notifications:', emailError);
-    //   // Don't fail the booking if email fails
-    // }
+      console.log('Email notifications sent successfully');
+    } catch (emailError) {
+      console.error('Error sending email notifications:', emailError);
+      // Don't fail the booking if email fails
+    }
     
     return NextResponse.json({
       success: true,

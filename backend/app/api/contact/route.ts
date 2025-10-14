@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-// import { sendContactFormNotification } from "../../lib/mailjet";
+import { sendContactFormNotification } from "../../../lib/mailjet";
 
 const prisma = new PrismaClient();
 
@@ -63,21 +63,21 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // Send email notification to admin (temporarily disabled)
-    // try {
-    //   await sendContactFormNotification({
-    //     name: message.name,
-    //     email: message.email,
-    //     phone: message.phone,
-    //     subject: message.subject,
-    //     message: message.message,
-    //   });
+    // Send email notification to admin
+    try {
+      await sendContactFormNotification({
+        name: message.name,
+        email: message.email,
+        phone: message.phone,
+        subject: message.subject,
+        message: message.message,
+      });
 
-    //   console.log('Contact form notification sent successfully');
-    // } catch (emailError) {
-    //   console.error('Error sending contact form notification:', emailError);
-    //   // Don't fail the message creation if email fails
-    // }
+      console.log('Contact form notification sent successfully');
+    } catch (emailError) {
+      console.error('Error sending contact form notification:', emailError);
+      // Don't fail the message creation if email fails
+    }
     
     return NextResponse.json({
       success: true,

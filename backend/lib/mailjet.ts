@@ -36,6 +36,10 @@ Handlebars.registerHelper('formatCurrency', (amount: number) => {
   }).format(amount);
 });
 
+Handlebars.registerHelper('gt', (a: number, b: number) => {
+  return a > b;
+});
+
 // Email sending function using Mailjet
 export const sendEmail = async (options: {
   to: string;
