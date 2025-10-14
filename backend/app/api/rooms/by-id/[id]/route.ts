@@ -19,8 +19,17 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const room = await prisma.room.findUnique({
-      where: { id: parseInt(params.id) }
+    // Check if this is an admin request (has authorization header)
+    const authHeader = request.headers.get('authorization');
+    const isAdminRequest = authHeader && authHeader.startsWith('Bearer ');
+    
+    // If admin request, allow inactive rooms; if public request, only active rooms
+    const whereClause = isAdminRequest 
+      ? { id: parseInt(params.id) }
+      : { id: parseInt(params.id), isActive: true };
+
+    const room = await prisma.room.findFirst({
+      where: whereClause
     });
 
     if (!room) {

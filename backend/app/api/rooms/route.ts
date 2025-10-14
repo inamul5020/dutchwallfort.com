@@ -6,7 +6,15 @@ const prisma = new PrismaClient();
 
 async function getRoomsHandler(request: NextRequest): Promise<NextResponse> {
   try {
+    // Check if this is an admin request (has authorization header)
+    const authHeader = request.headers.get('authorization');
+    const isAdminRequest = authHeader && authHeader.startsWith('Bearer ');
+    
+    // If admin request, return all rooms; if public request, return only active rooms
+    const whereClause = isAdminRequest ? {} : { isActive: true };
+    
     const rooms = await prisma.room.findMany({
+      where: whereClause,
       orderBy: { createdAt: 'desc' }
     });
     
