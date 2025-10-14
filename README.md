@@ -315,6 +315,14 @@ The database is populated with 4 rooms:
 
 ## 🆕 Recent Updates & Fixes
 
+### v3.4.1 - Gallery Images Fix & Database Optimization
+- ✅ **Gallery Images Fixed**: Updated database with correct image URLs pointing to actual files
+- ✅ **Database Schema Sync**: Fixed Prisma migrations and foreign key constraints
+- ✅ **Image Accessibility**: All gallery images now properly accessible from frontend
+- ✅ **Gallery API Working**: Complete gallery API with filtering, categories, and lightbox
+- ✅ **Admin Gallery Management**: Full CRUD operations for gallery images in admin dashboard
+- ✅ **Sample Gallery Data**: 10 high-quality property images across different categories
+
 ### v3.4.0 - Blog Categories & Content Management System
 - ✅ **Rich Text Editor**: Implemented TinyMCE WYSIWYG editor for blog posts
 - ✅ **Blog Categories**: Added complete category system with color coding and filtering
