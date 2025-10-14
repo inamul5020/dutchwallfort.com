@@ -36,7 +36,7 @@ const AdminServices = () => {
   const fetchServices = async () => {
     try {
       const response = await servicesAPI.getAll();
-      setServices(response.data || []);
+      setServices(response.data?.data || []);
     } catch (error) {
       console.error('Error fetching services:', error);
     } finally {

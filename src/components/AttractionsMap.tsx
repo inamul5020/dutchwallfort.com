@@ -104,14 +104,20 @@ const AttractionsMap: React.FC<AttractionsMapProps> = ({
     <div className={className}>
       {/* Map Container */}
       <div className="relative h-96 bg-gray-100 rounded-lg overflow-hidden">
-        {/* Simulated Map Background */}
-        <div 
-          className="w-full h-full bg-gradient-to-br from-blue-100 to-green-100 relative"
-          style={{
-            backgroundImage: `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23e5e7eb" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>')`,
-            backgroundSize: '20px 20px'
-          }}
-        >
+        {/* Google Maps Embed */}
+        <iframe
+          src={`https://www.google.com/maps/embed/v1/view?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dOWWgUjqVUJ0xY&center=${center.lat},${center.lng}&zoom=${zoom}&maptype=roadmap`}
+          width="100%"
+          height="100%"
+          style={{ border: 0 }}
+          allowFullScreen
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          title="Attractions Map"
+        ></iframe>
+        
+        {/* Overlay for attraction markers */}
+        <div className="absolute inset-0 pointer-events-none">
           {/* Map Center Marker */}
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <div className="w-4 h-4 bg-red-600 rounded-full border-2 border-white shadow-lg"></div>
@@ -251,15 +257,6 @@ const AttractionsMap: React.FC<AttractionsMapProps> = ({
                   <Navigation className="w-4 h-4" />
                   <span>Get Directions</span>
                 </button>
-                {selectedAttraction.website && (
-                  <button
-                    onClick={() => window.open(selectedAttraction.website, '_blank')}
-                    className="flex-1 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors flex items-center justify-center space-x-2"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                    <span>Visit Website</span>
-                  </button>
-                )}
               </div>
             </div>
           </div>

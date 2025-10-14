@@ -64,7 +64,7 @@ export const bookingsAPI = {
   getById: (id: number) => api.get(`/bookings/${id}`),
   create: (data: any) => api.post('/bookings', data),
   updateStatus: (id: number, status: string) =>
-    api.patch(`/bookings/${id}/status`, { status }),
+    api.patch(`/bookings/${id}`, { status }),
   confirm: (id: number) => api.put(`/bookings/${id}/confirm`),
   delete: (id: number) => api.delete(`/bookings/${id}`),
 };

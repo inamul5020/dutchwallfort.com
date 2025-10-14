@@ -55,14 +55,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log('API URL:', import.meta.env.VITE_API_URL);
       const response = await authAPI.login(email, password);
 
-      if (response.data.token && response.data.user) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        setUser(response.data.user);
+      // Handle the new API response structure: response.data.data.token
+      const token = response.data?.data?.token || response.data?.token;
+      const user = response.data?.data?.user || response.data?.user;
+
+      if (token && user) {
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        setUser(user);
         setIsAuthenticated(true);
+        console.log('Login successful:', user);
         return true;
       }
 
+      console.log('Login failed: No token or user in response');
       return false;
     } catch (error) {
       console.error('Login error:', error);

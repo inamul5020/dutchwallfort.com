@@ -52,8 +52,16 @@ const AdminServiceForm = () => {
   const fetchService = async () => {
     try {
       const response = await servicesAPI.getById(parseInt(id!));
-      if (response.data) {
-        setFormData(response.data);
+      if (response.data?.data) {
+        const serviceData = response.data.data;
+        setFormData({
+          name: serviceData.name || '',
+          description: serviceData.description || '',
+          price: serviceData.price || '',
+          price_currency: serviceData.price_currency || 'LKR',
+          category: serviceData.category || '',
+          is_active: serviceData.is_active || false,
+        });
       }
     } catch (error) {
       console.error('Error fetching service:', error);

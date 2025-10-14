@@ -1,38 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
+import { generateToken } from "../../../../lib/auth";
+import { createSecureHandler } from "../../../../lib/api-middleware";
 
 const prisma = new PrismaClient();
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
-
-export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
-  });
-}
-
-export async function POST(request: NextRequest) {
+async function loginHandler(request: NextRequest): Promise<NextResponse> {
   try {
     const { email, password } = await request.json();
 
     if (!email || !password) {
       return NextResponse.json(
         { success: false, error: "Email and password are required" },
-        { 
-          status: 400,
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-          }
-        }
+        { status: 400 }
       );
     }
 
@@ -44,14 +25,7 @@ export async function POST(request: NextRequest) {
     if (!user) {
       return NextResponse.json(
         { success: false, error: "Invalid email or password" },
-        { 
-          status: 401,
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-          }
-        }
+        { status: 401 }
       );
     }
 
@@ -61,27 +35,16 @@ export async function POST(request: NextRequest) {
     if (!isValidPassword) {
       return NextResponse.json(
         { success: false, error: "Invalid email or password" },
-        { 
-          status: 401,
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-          }
-        }
+        { status: 401 }
       );
     }
 
-    // Generate JWT token
-    const token = jwt.sign(
-      { 
-        userId: user.id, 
-        email: user.email, 
-        role: user.role 
-      },
-      JWT_SECRET,
-      { expiresIn: "24h" }
-    );
+    // Generate JWT token using the new auth system
+    const token = generateToken({
+      id: user.id,
+      email: user.email,
+      role: user.role as 'admin' | 'user'
+    });
 
     // Return user data (without password) and token
     const userData = {
@@ -93,13 +56,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      token,
-      user: userData
-    }, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      data: {
+        token,
+        user: userData
       }
     });
 
@@ -107,14 +66,16 @@ export async function POST(request: NextRequest) {
     console.error("Login error:", error);
     return NextResponse.json(
       { success: false, error: "Internal server error" },
-      { 
-        status: 500,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        }
-      }
+      { status: 500 }
     );
   }
 }
+
+export const POST = createSecureHandler(loginHandler, {
+  rateLimit: { windowMs: 15 * 60 * 1000, maxRequests: 5 }, // 5 login attempts per 15 minutes
+  allowedMethods: ['POST']
+});
+
+export const OPTIONS = createSecureHandler(async () => {
+  return new NextResponse(null, { status: 200 });
+}, { allowedMethods: ['OPTIONS'] });

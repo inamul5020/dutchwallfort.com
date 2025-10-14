@@ -1,21 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { sendBookingConfirmation, sendBookingNotificationToAdmin } from "../../lib/mailjet";
+import { publicHandler, adminWriteHandler } from "../../../lib/api-middleware";
+// import { sendBookingConfirmation, sendBookingNotificationToAdmin } from "../../lib/mailjet";
 
 const prisma = new PrismaClient();
 
-export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
-  });
-}
-
-export async function GET() {
+async function getBookingsHandler(request: NextRequest): Promise<NextResponse> {
   try {
     const bookings = await prisma.booking.findMany({
       include: {
@@ -45,30 +35,17 @@ export async function GET() {
       success: true,
       data: mappedBookings,
       count: mappedBookings.length
-    }, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      }
     });
   } catch (error) {
     console.error('Error fetching bookings:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to fetch bookings' },
-      { 
-        status: 500,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        }
-      }
+      { status: 500 }
     );
   }
 }
 
-export async function POST(request: NextRequest) {
+async function createBookingHandler(request: NextRequest): Promise<NextResponse> {
   try {
     const body = await request.json();
     
@@ -96,62 +73,66 @@ export async function POST(request: NextRequest) {
     const roomPrice = booking.room ? parseFloat(booking.room.price.toString()) : 0;
     const estimatedPrice = roomPrice * totalNights;
 
-    // Send email notifications
-    try {
-      // Send confirmation email to guest (pending status)
-      await sendBookingConfirmation({
-        guestName: booking.guestName,
-        guestEmail: booking.guestEmail,
-        checkIn: body.checkIn,
-        checkOut: body.checkOut,
-        roomName: booking.room?.name || 'Any Room',
-        guests: booking.guests,
-        totalNights: totalNights,
-        estimatedPrice: estimatedPrice,
-        message: booking.message,
-        status: 'pending',
-      });
+    // Send email notifications (temporarily disabled)
+    // try {
+    //   // Send confirmation email to guest (pending status)
+    //   await sendBookingConfirmation({
+    //     guestName: booking.guestName,
+    //     guestEmail: booking.guestEmail,
+    //     checkIn: body.checkIn,
+    //     checkOut: body.checkOut,
+    //     roomName: booking.room?.name || 'Any Room',
+    //     guests: booking.guests,
+    //     totalNights: totalNights,
+    //     estimatedPrice: estimatedPrice,
+    //     message: booking.message,
+    //     status: 'pending',
+    //   });
 
-      // Send notification email to admin
-      await sendBookingNotificationToAdmin({
-        guestName: booking.guestName,
-        guestEmail: booking.guestEmail,
-        guestPhone: booking.guestPhone,
-        checkIn: body.checkIn,
-        checkOut: body.checkOut,
-        roomName: booking.room?.name || 'Any Room',
-        guests: booking.guests,
-        message: booking.message,
-      });
+    //   // Send notification email to admin
+    //   await sendBookingNotificationToAdmin({
+    //     guestName: booking.guestName,
+    //     guestEmail: booking.guestEmail,
+    //     guestPhone: booking.guestPhone,
+    //     checkIn: body.checkIn,
+    //     checkOut: body.checkOut,
+    //     roomName: booking.room?.name || 'Any Room',
+    //     guests: booking.guests,
+    //     message: booking.message,
+    //   });
 
-      console.log('Email notifications sent successfully');
-    } catch (emailError) {
-      console.error('Error sending email notifications:', emailError);
-      // Don't fail the booking if email fails
-    }
+    //   console.log('Email notifications sent successfully');
+    // } catch (emailError) {
+    //   console.error('Error sending email notifications:', emailError);
+    //   // Don't fail the booking if email fails
+    // }
     
     return NextResponse.json({
       success: true,
       data: booking
-    }, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      }
     });
   } catch (error) {
     console.error('Error creating booking:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to create booking' },
-      { 
-        status: 500,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        }
-      }
+      { status: 500 }
     );
   }
+}
+
+// Export secure handlers
+export const GET = adminWriteHandler(getBookingsHandler); // Admin only for viewing bookings
+export const POST = publicHandler(createBookingHandler); // Public for creating bookings
+
+// Add explicit OPTIONS handler for CORS
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': process.env.FRONTEND_URL || 'http://localhost:5173',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Max-Age': '86400',
+    },
+  });
 }

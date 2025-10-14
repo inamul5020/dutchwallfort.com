@@ -48,18 +48,19 @@ const AdminRoomForm = () => {
   const fetchRoom = async () => {
     try {
       const response = await roomsAPI.getById(parseInt(id!));
-      if (response.data) {
+      if (response.data?.data) {
+        const roomData = response.data.data;
         setFormData({
-          slug: response.data.slug || '',
-          name: response.data.name || '',
-          shortDescription: response.data.shortDescription || '',
-          longDescription: response.data.longDescription || '',
-          capacity: response.data.capacity || 2,
-          beds: response.data.beds || '',
-          amenities: response.data.amenities || [],
-          price: response.data.price || '0',
-          images: response.data.images || [],
-          isActive: response.data.isActive !== undefined ? response.data.isActive : true,
+          slug: roomData.slug || '',
+          name: roomData.name || '',
+          shortDescription: roomData.shortDescription || '',
+          longDescription: roomData.longDescription || '',
+          capacity: roomData.capacity || 2,
+          beds: roomData.beds || '',
+          amenities: roomData.amenities || [],
+          price: roomData.price || '0',
+          images: roomData.images || [],
+          isActive: roomData.isActive !== undefined ? roomData.isActive : true,
         });
       }
     } catch (error) {

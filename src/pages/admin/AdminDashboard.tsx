@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { roomsAPI, servicesAPI, blogAPI, bookingsAPI } from '../../lib/api';
+import { useAuth } from '../../contexts/AuthContext';
 import { Bed, FileText, MapPin, Calendar } from 'lucide-react';
 
 const AdminDashboard = () => {
+  const { isAuthenticated, user } = useAuth();
   const [stats, setStats] = useState({
     totalRooms: 0,
     activeRooms: 0,
@@ -19,11 +21,18 @@ const AdminDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchDashboardData();
-  }, []);
+    if (isAuthenticated && user) {
+      fetchDashboardData();
+    } else {
+      setIsLoading(false);
+    }
+  }, [isAuthenticated, user]);
 
   const fetchDashboardData = async () => {
     try {
+      console.log('Fetching dashboard data...');
+      console.log('Token in localStorage:', localStorage.getItem('token'));
+      
       // Fetch stats
       const [roomsResult, postsResult, servicesResult, bookingsResult] = await Promise.all([
         roomsAPI.getAll(),
@@ -32,25 +41,34 @@ const AdminDashboard = () => {
         bookingsAPI.getAll()
       ]);
 
+      console.log('API Results:', {
+        rooms: roomsResult.data,
+        posts: postsResult.data,
+        services: servicesResult.data,
+        bookings: bookingsResult.data
+      });
+
       // Calculate stats
-      const rooms = roomsResult.data || [];
-      const posts = postsResult.data || [];
-      const services = servicesResult.data || [];
-      const bookings = bookingsResult.data || [];
+      const rooms = roomsResult.data?.data || [];
+      const posts = postsResult.data?.data || [];
+      const services = servicesResult.data?.data || [];
+      const bookings = bookingsResult.data?.data || [];
+
+      console.log('Processed data:', { rooms, posts, services, bookings });
 
       setStats({
         totalRooms: rooms.length,
-        activeRooms: rooms.filter(r => r.is_active).length,
+        activeRooms: rooms.filter(r => r.isActive).length,
         totalPosts: posts.length,
         publishedPosts: posts.filter(p => p.is_published).length,
         totalServices: services.length,
-        activeServices: services.filter(s => s.is_active).length,
+        activeServices: services.filter(s => s.isActive).length,
         totalBookings: bookings.length,
-        newBookings: bookings.filter(b => b.status === 'new').length
+        newBookings: bookings.filter(b => b.status === 'pending').length
       });
 
       // Fetch recent bookings
-      const allBookings = bookingsResult.data || [];
+      const allBookings = bookingsResult.data?.data || [];
       const recent = allBookings
         .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
         .slice(0, 5);
@@ -58,6 +76,8 @@ const AdminDashboard = () => {
       setRecentBookings(recent);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
+      console.error('Error details:', error.response?.data);
+      console.error('Error status:', error.response?.status);
     } finally {
       setIsLoading(false);
     }
@@ -102,6 +122,17 @@ const AdminDashboard = () => {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Authentication Required</h2>
+          <p className="text-gray-600">Please log in to access the dashboard.</p>
+        </div>
       </div>
     );
   }

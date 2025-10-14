@@ -34,23 +34,6 @@ const GalleryPage: React.FC = () => {
           showCategories={true}
           className="mb-16"
         />
-
-        {/* Featured Images Section */}
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-              Featured Highlights
-            </h3>
-            <p className="text-gray-600">
-              Our most stunning spaces and memorable moments
-            </p>
-          </div>
-          <Gallery 
-            featured={true}
-            limit={8}
-            showCategories={false}
-          />
-        </div>
       </div>
 
       {/* Call to Action */}

@@ -33,8 +33,8 @@ const BlogDetail = () => {
   const fetchPost = async () => {
     try {
       const response = await blogAPI.getBySlug(slug!);
-      if (response.data) {
-        setPost(response.data);
+      if (response.data?.data) {
+        setPost(response.data.data);
       } else {
         setError('Blog post not found');
       }

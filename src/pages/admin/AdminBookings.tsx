@@ -30,7 +30,7 @@ const AdminBookings = () => {
   const fetchBookings = async () => {
     try {
       const response = await bookingsAPI.getAll();
-      setBookings(response.data || []);
+      setBookings(response.data?.data || []);
     } catch (error) {
       console.error('Error fetching bookings:', error);
     } finally {
@@ -59,8 +59,8 @@ const AdminBookings = () => {
   };
 
   const filteredBookings = statusFilter === 'all' 
-    ? bookings 
-    : bookings.filter(booking => booking.status === statusFilter);
+    ? (bookings || []) 
+    : (bookings || []).filter(booking => booking.status === statusFilter);
 
   const getStatusColor = (status: string) => {
     switch (status) {

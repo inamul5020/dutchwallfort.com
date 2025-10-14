@@ -34,6 +34,7 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/dutchwallfort
       - NODE_ENV=development
+      - JWT_SECRET=dutchwallfort-super-secret-jwt-key-change-in-production-2024
       - MAILJET_API_KEY=38c3f40fd32cc60609b83233d87e93a9
       - MAILJET_SECRET_KEY=fe3259ed3c40a1ad3c85c6551687ed5f
       - MAILJET_FROM_EMAIL=support@dutchwallfort.com

@@ -60,26 +60,26 @@ export async function PUT(
     const roomPrice = booking.room ? parseFloat(booking.room.price.toString()) : 0;
     const estimatedPrice = roomPrice * totalNights;
 
-    // Send confirmation email to guest
-    try {
-      await sendBookingConfirmation({
-        guestName: booking.guestName,
-        guestEmail: booking.guestEmail,
-        checkIn: booking.checkIn.toISOString().split('T')[0],
-        checkOut: booking.checkOut.toISOString().split('T')[0],
-        roomName: booking.room?.name || 'Any Room',
-        guests: booking.guests,
-        totalNights: totalNights,
-        estimatedPrice: estimatedPrice,
-        message: booking.message,
-        status: 'confirmed',
-      });
+    // Send confirmation email to guest (temporarily disabled)
+    // try {
+    //   await sendBookingConfirmation({
+    //     guestName: booking.guestName,
+    //     guestEmail: booking.guestEmail,
+    //     checkIn: booking.checkIn.toISOString().split('T')[0],
+    //     checkOut: booking.checkOut.toISOString().split('T')[0],
+    //     roomName: booking.room?.name || 'Any Room',
+    //     guests: booking.guests,
+    //     totalNights: totalNights,
+    //     estimatedPrice: estimatedPrice,
+    //     message: booking.message,
+    //     status: 'confirmed',
+    //   });
 
-      console.log('Booking confirmation email sent successfully');
-    } catch (emailError) {
-      console.error('Error sending confirmation email:', emailError);
-      // Don't fail the confirmation if email fails
-    }
+    //   console.log('Booking confirmation email sent successfully');
+    // } catch (emailError) {
+    //   console.error('Error sending confirmation email:', emailError);
+    //   // Don't fail the confirmation if email fails
+    // }
 
     return NextResponse.json({
       success: true,

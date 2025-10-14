@@ -41,8 +41,17 @@ const AdminBlogForm = () => {
   const fetchPost = async () => {
     try {
       const response = await blogAPI.getById(parseInt(id!));
-      if (response.data) {
-        setFormData(response.data);
+      if (response.data?.data) {
+        const postData = response.data.data;
+        setFormData({
+          slug: postData.slug || '',
+          title: postData.title || '',
+          excerpt: postData.excerpt || '',
+          content: postData.content || '',
+          featured_image: postData.featured_image || '',
+          author: postData.author || 'Dutch Wall Fort',
+          is_published: postData.is_published || false,
+        });
       }
     } catch (error) {
       console.error('Error fetching blog post:', error);

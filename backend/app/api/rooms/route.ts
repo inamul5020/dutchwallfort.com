@@ -1,23 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { publicHandler, adminWriteHandler } from "../../../lib/api-middleware";
 
 const prisma = new PrismaClient();
 
-export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
-  });
-}
-
-export async function GET() {
+async function getRoomsHandler(request: NextRequest): Promise<NextResponse> {
   try {
     const rooms = await prisma.room.findMany({
-      where: { isActive: true },
       orderBy: { createdAt: 'desc' }
     });
     
@@ -25,30 +14,17 @@ export async function GET() {
       success: true,
       data: rooms,
       count: rooms.length
-    }, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      }
     });
   } catch (error) {
     console.error('Error fetching rooms:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to fetch rooms' },
-      { 
-        status: 500,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        }
-      }
+      { status: 500 }
     );
   }
 }
 
-export async function POST(request: NextRequest) {
+async function createRoomHandler(request: NextRequest, user: any): Promise<NextResponse> {
   try {
     const body = await request.json();
 
@@ -70,25 +46,29 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: room
-    }, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      }
     });
   } catch (error) {
     console.error('Error creating room:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to create room' },
-      { 
-        status: 500,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        }
-      }
+      { status: 500 }
     );
   }
+}
+
+// Export secure handlers
+export const GET = publicHandler(getRoomsHandler);
+export const POST = adminWriteHandler(createRoomHandler, 'room');
+
+// Add explicit OPTIONS handler for CORS
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': process.env.FRONTEND_URL || 'http://localhost:5173',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Max-Age': '86400',
+    },
+  });
 }
