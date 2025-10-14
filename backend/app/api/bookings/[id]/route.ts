@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { sendBookingConfirmation } from "../../../../lib/mailjet";
 
 const prisma = new PrismaClient();
 
@@ -126,6 +127,36 @@ export async function PUT(
         room: true
       }
     });
+
+    // Send email notification if status changed to confirmed
+    if (body.status === 'confirmed') {
+      try {
+        // Calculate total nights and estimated price
+        const checkInDate = new Date(booking.checkIn);
+        const checkOutDate = new Date(booking.checkOut);
+        const totalNights = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
+        const roomPrice = booking.room ? parseFloat(booking.room.price.toString()) : 0;
+        const estimatedPrice = roomPrice * totalNights;
+
+        await sendBookingConfirmation({
+          guestName: booking.guestName,
+          guestEmail: booking.guestEmail,
+          checkIn: booking.checkIn.toISOString().split('T')[0],
+          checkOut: booking.checkOut.toISOString().split('T')[0],
+          roomName: booking.room?.name || 'Any Room',
+          guests: booking.guests,
+          totalNights: totalNights,
+          estimatedPrice: estimatedPrice,
+          message: booking.message,
+          status: 'confirmed',
+        });
+
+        console.log('Booking confirmation email sent to guest');
+      } catch (emailError) {
+        console.error('Error sending booking confirmation email:', emailError);
+        // Don't fail the booking update if email fails
+      }
+    }
 
     // Map database fields to frontend expected fields
     const mappedBooking = {
