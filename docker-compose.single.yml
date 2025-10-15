@@ -35,7 +35,8 @@ services:
       - MAILJET_SECRET_KEY=${MAILJET_SECRET_KEY}
       - MAILJET_FROM_EMAIL=${MAILJET_FROM_EMAIL:-support@dutchwallfort.com}
       - ADMIN_EMAIL=${ADMIN_EMAIL:-inamul5020@gmail.com}
-      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3000}
+      - VITE_API_URL=${VITE_API_URL:-https://api.dutchwallfort.com}
+      - FRONTEND_URL=${FRONTEND_URL:-https://dutchwallfort.com}
     ports:
       - "3000:3000"
     depends_on:

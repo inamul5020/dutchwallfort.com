@@ -32,20 +32,20 @@ MAILJET_SECRET_KEY=your_mailjet_secret_key
 MAILJET_FROM_EMAIL=support@dutchwallfort.com
 ADMIN_EMAIL=inamul5020@gmail.com
 
-# URLs (update with your domain)
-VITE_API_URL=https://api.yourdomain.com
-FRONTEND_URL=https://yourdomain.com
+# URLs (configured for dutchwallfort.com)
+VITE_API_URL=https://api.dutchwallfort.com
+FRONTEND_URL=https://dutchwallfort.com
 ```
 
 ### 3. Domain Configuration
 
 #### Frontend Domain:
-- **Domain**: `yourdomain.com` or `www.yourdomain.com`
+- **Domain**: `dutchwallfort.com` or `www.dutchwallfort.com`
 - **Port**: 3001
 - **Service**: frontend
 
 #### Backend API Domain:
-- **Domain**: `api.yourdomain.com`
+- **Domain**: `api.dutchwallfort.com`
 - **Port**: 3000
 - **Service**: backend
 
@@ -138,8 +138,8 @@ The application automatically runs database migrations on startup.
 ## 📊 Monitoring
 
 ### Health Endpoints:
-- **Backend**: `https://api.yourdomain.com/api/health`
-- **Frontend**: `https://yourdomain.com/health`
+- **Backend**: `https://api.dutchwallfort.com/api/health`
+- **Frontend**: `https://dutchwallfort.com/health`
 
 ### Coolify Monitoring:
 - Resource usage

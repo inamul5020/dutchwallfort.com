@@ -81,10 +81,10 @@ docker run -d \
 ## 🌐 URL Structure
 
 ### Single Container Routes:
-- **Frontend**: `http://yourdomain.com/` → Serves React app
-- **API**: `http://yourdomain.com/api/*` → Backend API
-- **Health**: `http://yourdomain.com/api/health` → Health check
-- **Admin**: `http://yourdomain.com/admin` → Admin dashboard
+- **Frontend**: `https://dutchwallfort.com/` → Serves React app
+- **API**: `https://dutchwallfort.com/api/*` → Backend API
+- **Health**: `https://dutchwallfort.com/api/health` → Health check
+- **Admin**: `https://dutchwallfort.com/admin` → Admin dashboard
 
 ### How Routing Works:
 ```javascript
@@ -116,7 +116,8 @@ MAILJET_FROM_EMAIL=support@dutchwallfort.com
 ADMIN_EMAIL=inamul5020@gmail.com
 
 # URLs
-FRONTEND_URL=http://localhost:3000
+VITE_API_URL=https://api.dutchwallfort.com
+FRONTEND_URL=https://dutchwallfort.com
 ```
 
 ## 📊 Advantages of Single Container
